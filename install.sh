@@ -29,8 +29,12 @@ done
 if [ "$OS" = "arch" ]
 then
 	# Get Packages
-	sudo pacman --noconfirm -Syu
-	sudo pacman --noconfirm --needed -S \
+	sudo pacman \
+		--needed \
+		--noconfirm \
+		--noprogressbar \
+		--color=never \
+		-Syu \
 		i3-gaps \
 		i3lock \
 		pulseaudio \
@@ -43,5 +47,6 @@ else
 	read
 
 	install_i3lock
-	exit
 fi
+
+exit 0
