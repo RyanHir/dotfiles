@@ -40,7 +40,8 @@ then
 		pulseaudio \
 		pulseaudio-alsa \
 		feh \
-		rofi
+		rofi \
+		xf86-video-intel
 
 	sudo cp "${FILES}/lock.service" "/etc/systemd/system/lock@.service"
 	sudo systemctl daemon-reload
@@ -53,5 +54,11 @@ else
 	sudo systemctl daemon-reload
 	sudo systemctl enable "lock@$USER"
 fi
+
+sudo cp "${FILES}/xorg-intel" "/etc/X11/xorg.conf.d/20-intel.conf"
+
+echo "Press enter to reboot"
+read
+reboot
 
 exit 0
