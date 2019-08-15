@@ -39,7 +39,8 @@ then
 		i3lock \
 		pulseaudio \
 		pulseaudio-alsa \
-		feh
+		feh \
+		rofi
 
 	install_i3lock
 else
