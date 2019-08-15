@@ -53,7 +53,7 @@ fi
 
 sudo cp "${FILES}/xorg-intel" "/etc/X11/xorg.conf.d/20-intel.conf"
 
-echo "Press enter to reboot"
+echo -e "\n\nPress enter to reboot"
 read
 reboot
 
