@@ -7,12 +7,6 @@ OS=$(cat /etc/os-release | grep "^ID" | sed "s/ID=//")
 DIRTOHIDE="${FILES}/launchfiles/"
 TOHIDE=$(ls "${DIRTOHIDE}")
 
-function install_i3lock() {
-	sudo cp "${FILES}/lock.service" "/etc/systemd/system/lock@.service"
-	sudo systemctl daemon-reload
-	sudo systemctl enable "lock@$USER"
-}
-
 mkdir -p "${HOME}/.config/i3/"
 mkdir -p "${HOME}/.config/gtk-3.0/"
 mkdir -p "${HOME}/.local/share/applications/"
@@ -42,13 +36,17 @@ then
 		feh \
 		rofi
 
-	install_i3lock
+	sudo cp "${FILES}/lock.service" "/etc/systemd/system/lock@.service"
+	sudo systemctl daemon-reload
+	sudo systemctl enable "lock@$USER"
 else
 	echo "Cancel if i3lock is not installed"
 	echo "If installed press any key to continue"
 	read
 
-	install_i3lock
+	sudo cp "${FILES}/lock.service" "/etc/systemd/system/lock@.service"
+	sudo systemctl daemon-reload
+	sudo systemctl enable "lock@$USER"
 fi
 
 exit 0
