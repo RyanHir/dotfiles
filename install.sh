@@ -22,10 +22,6 @@ do
 	cp "${DIRTOHIDE}/${x}" "${HOME}/.local/share/applications"
 done
 
-read a
-
-echo $a
-
 if [ "$OS" = "arch" ]
 then
 	# Get Packages
