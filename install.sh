@@ -8,17 +8,23 @@ DIRTOHIDE="${FILES}/launchfiles/"
 TOHIDE=$(ls "${DIRTOHIDE}")
 
 mkdir -p "${HOME}/.config/i3/"
+mkdir -p "${HOME}/.config/rofi/"
 mkdir -p "${HOME}/.config/gtk-3.0/"
 mkdir -p "${HOME}/.local/share/applications/"
 
 cp "${FILES}/bashrc" "${HOME}/.bashrc"
 cp "${FILES}/i3config" "${HOME}/.config/i3/config"
+cp "${FILES}/rofconfig" "${HOME}/.config/rofi/config"
 cp "${FILES}/gtk-config" "${HOME}/.config/gtk-3.0/settings.ini"
 
 for x in $TOHIDE
 do
 	cp "${DIRTOHIDE}/${x}" "${HOME}/.local/share/applications"
 done
+
+read a
+
+echo $a
 
 if [ "$OS" = "arch" ]
 then
@@ -42,7 +48,6 @@ then
 else
 	echo "Cancel if i3lock is not installed"
 	echo "If installed press any key to continue"
-	read
 
 	sudo cp "${FILES}/lock.service" "/etc/systemd/system/lock@.service"
 	sudo systemctl daemon-reload
