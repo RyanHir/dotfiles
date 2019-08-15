@@ -14,7 +14,7 @@ mkdir -p "${HOME}/.local/share/applications/"
 
 cp "${FILES}/bashrc" "${HOME}/.bashrc"
 cp "${FILES}/i3config" "${HOME}/.config/i3/config"
-cp "${FILES}/rofconfig" "${HOME}/.config/rofi/config"
+cp "${FILES}/roficonfig" "${HOME}/.config/rofi/config"
 cp "${FILES}/gtk-config" "${HOME}/.config/gtk-3.0/settings.ini"
 
 for x in $TOHIDE
