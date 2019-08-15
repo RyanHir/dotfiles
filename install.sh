@@ -38,7 +38,8 @@ then
 		i3-gaps \
 		i3lock \
 		pulseaudio \
-		pulseaudio-alsa
+		pulseaudio-alsa \
+		feh
 
 	install_i3lock
 else
