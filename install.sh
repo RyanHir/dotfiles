@@ -37,6 +37,7 @@ then
 		pulseaudio-alsa \
 		feh \
 		rofi \
+		udiskie \
 		xf86-video-intel
 
 	sudo cp "${FILES}/lock.service" "/etc/systemd/system/lock@.service"
