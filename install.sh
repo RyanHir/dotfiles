@@ -22,19 +22,25 @@ done
 
 if [ "$OS" = "arch" ]
 then
-	# Get Packages
-	sudo pacman \
-		--needed \
-		--noconfirm \
-		--noprogressbar \
-		--color=never \
-		-Syu \
-		i3-gaps \
-		i3lock \
-		pulseaudio \
-		pulseaudio-alsa \
-		feh \
-		rofi \
-		udiskie \
-		xf86-video-intel
+	PACKAGES="\
+		i3-gaps\
+		i3lock\
+		pulseaudio\
+		pulseaudio-alsa\
+		feh\
+		rofi\
+		udiskie\
+		xf86-video-intel"
+	for X in $PACKAGES
+	do
+		CHECK=$(pacman -Qs $X | grep "local" | grep "$X ")
+		if [ -z "$CHECK" ]
+		then
+			sudo pacman \
+				--needed \
+				--noconfirm \
+				-Syu \
+				$X
+		fi
+	done
 fi
