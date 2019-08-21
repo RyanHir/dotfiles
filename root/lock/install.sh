@@ -1,5 +1,5 @@
 #!/bin/sh
 
-cp config /etc/systemd/system/lock@.service
-systemctl daemon-reload
-systemctl enable lock@$1
+sudo cp config /etc/systemd/system/lock@.service
+sudo systemctl daemon-reload
+sudo systemctl enable lock@$USER

@@ -16,7 +16,7 @@ done
 for X in $ROOT
 do
 	cd "${DIR}/root/${X}"
-	sudo sh install.sh $USER
+	sh install.sh
 	cd "${DIR}"
 done
 
