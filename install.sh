@@ -27,6 +27,7 @@ then
 		i3lock\
 		pulseaudio\
 		pulseaudio-alsa\
+		alsa-utils\
 		feh\
 		rofi\
 		udiskie\
