@@ -32,8 +32,8 @@ gaps outer 15
 gaps inner 10
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D pulse set "Master 5%+" #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D pulse set "Master 5%-" #decrease sound volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D pulse set Master 5%+ #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D pulse set Master 5%- #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # Sreen brightness controls
