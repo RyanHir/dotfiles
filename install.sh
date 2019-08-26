@@ -31,7 +31,9 @@ then
 		feh\
 		rofi\
 		udiskie\
-		xf86-video-intel"
+		xf86-video-intel\
+		xorg-xinit\
+		xorg-server"
 	for X in $PACKAGES
 	do
 		CHECK=$(pacman -Qs $X | grep "local" | grep "$X ")

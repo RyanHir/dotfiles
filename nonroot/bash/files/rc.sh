@@ -1,4 +1,7 @@
 # /etc/bash/bashrc
+
+if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty3 ]]; then exec startx; fi
+
 shopt -s checkwinsize
 
 # Disable completion when the input buffer is empty.  i.e. Hitting tab
