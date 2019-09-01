@@ -6,14 +6,34 @@ OS=$(grep "^ID" /etc/os-release | sed "s/ID=//")
 NONROOT=$(ls nonroot)
 ROOT=$(ls root)
 
+question() {
+	printf "%s (y/n)? " "$1"
+	old_stty_cfg=$(stty -g)
+	stty raw -echo ; answer=$(head -c 1) ; stty "$old_stty_cfg" # Careful playing with stty
+	if echo "$answer" | grep -iq "^y" ;then
+		printf "Yes\n"
+		return 1
+	else
+		printf "No\n"
+		return 0
+	fi
+}
+
 for X in $NONROOT
 do
 	cd "${DIR}/nonroot/${X}" || exit
 	sh install.sh
 done
 
-if [ "$1" = "YES" ]
+if echo "$1" | grep -iq "^n\|^n"
 then
+	printf "No Root Mode\n"
+	exit
+elif [ -z "$1" ] && question "Run Root Mode?"
+then
+	printf "No Root Mode\n"
+	exit
+else
 	for X in $ROOT
 	do
 		cd "${DIR}/root/${X}" || exit
@@ -36,7 +56,7 @@ then
 			xorg-server"
 		for X in $PACKAGES
 		do
-			CHECK=$(pacman -Qs "$X" | grep "^local" | grep "$X ")
+			CHECK=$(pacman -Qs "$X" | grep "^local.*$X")
 			if [ -z "$CHECK" ]
 			then
 				sudo pacman \
@@ -47,9 +67,4 @@ then
 			fi
 		done
 	fi
-elif [ "$1" = "NO" ]
-then
-	echo "Opted out from root mode"
-else
-	echo "Root Oution not provided, skipping"
 fi
