@@ -40,34 +40,6 @@ then
 		cd "${DIR}/root/${X}" || exit
 		sh install.sh
 	done
-
-	if [ "$OS" = "arch" ]
-	then
-		PACKAGES="\
-			i3-gaps\
-			i3lock\
-			pulseaudio\
-			pulseaudio-alsa\
-			alsa-utils\
-			feh\
-			rofi\
-			udiskie\
-			xf86-video-intel\
-			xorg-xinit\
-			xorg-server"
-		for X in $PACKAGES
-		do
-			CHECK=$(pacman -Qs "$X" | grep "^local.*$X")
-			if [ -z "$CHECK" ]
-			then
-				sudo pacman \
-					--needed \
-					--noconfirm \
-					-Syu \
-					"$X"
-			fi
-		done
-	fi
 else
 	printf "An error has occured!\n"
 	printf "Please run command with the flag \"y\" or \"n\"\n"
