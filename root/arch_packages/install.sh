@@ -1,5 +1,7 @@
 #! /bin/sh
 
+OS=$(grep "^ID" /etc/os-release | sed "s/ID=//")
+
 if [ "$OS" = "arch" ]
 then
 	PACKAGES="\

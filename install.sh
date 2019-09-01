@@ -1,7 +1,6 @@
 #! /bin/sh
 
 DIR=$(pwd)
-OS=$(grep "^ID" /etc/os-release | sed "s/ID=//")
 
 NONROOT=$(ls nonroot)
 ROOT=$(ls root)
@@ -19,6 +18,15 @@ question() {
 	fi
 }
 
+runroot() {
+	for X in $ROOT
+	do
+		cd "${DIR}/root/${X}" || exit
+		sh install.sh
+	done
+	cd "${DIR}"
+}
+
 for X in $NONROOT
 do
 	cd "${DIR}/nonroot/${X}" || exit
@@ -29,17 +37,18 @@ if echo "$1" | grep -iq "^n"
 then
 	printf "No Root Mode\n"
 	exit
-elif [ -z "$1" ] && question "Run Root Mode?"
+elif [ -z "$1" ]
 then
-	printf "No Root Mode\n"
-	exit
+	if ! question "Run Root Mode"
+	then
+		runroot
+	else
+		printf "No Root Mode\n"
+		exit
+	fi
 elif echo "$1" | grep -iq "^y"  
 then
-	for X in $ROOT
-	do
-		cd "${DIR}/root/${X}" || exit
-		sh install.sh
-	done
+	runroot
 else
 	printf "An error has occured!\n"
 	printf "Please run command with the flag \"y\" or \"n\"\n"
