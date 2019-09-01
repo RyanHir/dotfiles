@@ -13,37 +13,45 @@ do
 	cd "${DIR}"
 done
 
-for X in $ROOT
-do
-	cd "${DIR}/root/${X}"
-	sh install.sh
-	cd "${DIR}"
-done
-
-if [ "$OS" = "arch" ]
+if [ "$1" == "YES" ]
 then
-	PACKAGES="\
-		i3-gaps\
-		i3lock\
-		pulseaudio\
-		pulseaudio-alsa\
-		alsa-utils\
-		feh\
-		rofi\
-		udiskie\
-		xf86-video-intel\
-		xorg-xinit\
-		xorg-server"
-	for X in $PACKAGES
+	for X in $ROOT
 	do
-		CHECK=$(pacman -Qs $X | grep "local" | grep "$X ")
-		if [ -z "$CHECK" ]
-		then
-			sudo pacman \
-				--needed \
-				--noconfirm \
-				-Syu \
-				$X
-		fi
+		cd "${DIR}/root/${X}"
+		sh install.sh
+		cd "${DIR}"
 	done
+
+	if [ "$OS" = "arch" ]
+	then
+		PACKAGES="\
+			i3-gaps\
+			i3lock\
+			pulseaudio\
+			pulseaudio-alsa\
+			alsa-utils\
+			feh\
+			rofi\
+			udiskie\
+			xf86-video-intel\
+			xorg-xinit\
+			xorg-server"
+		for X in $PACKAGES
+		do
+			CHECK=$(pacman -Qs $X | grep "local" | grep "$X ")
+			if [ -z "$CHECK" ]
+			then
+				sudo pacman \
+					--needed \
+					--noconfirm \
+					-Syu \
+					$X
+			fi
+		done
+	fi
+elif [ "$1" == "NO" ]
+then
+	echo "Opted out from root mode"
+else
+	echo "Root Oution not provided, skipping"
 fi
