@@ -1,25 +1,25 @@
 #! /bin/sh
 
 DIR=$(pwd)
-OS=$(cat /etc/os-release | grep "^ID" | sed "s/ID=//")
+OS=$(grep "^ID" /etc/os-release | sed "s/ID=//")
 
 NONROOT=$(ls nonroot)
 ROOT=$(ls root)
 
 for X in $NONROOT
 do
-	cd "${DIR}/nonroot/${X}"
+	cd "${DIR}/nonroot/${X}" || exit
 	sh install.sh
-	cd "${DIR}"
 done
+#cd "$DIR" || exit
 
-if [ "$1" == "YES" ]
+if [ "$1" = "YES" ]
 then
 	for X in $ROOT
 	do
-		cd "${DIR}/root/${X}"
+		cd "${DIR}/root/${X}" || exit
 		sh install.sh
-		cd "${DIR}"
+		#cd "${DIR}" || exit
 	done
 
 	if [ "$OS" = "arch" ]
@@ -38,18 +38,18 @@ then
 			xorg-server"
 		for X in $PACKAGES
 		do
-			CHECK=$(pacman -Qs $X | grep "local" | grep "$X ")
+			CHECK=$(pacman -Qs "$X" | grep "^local" | grep "$X ")
 			if [ -z "$CHECK" ]
 			then
 				sudo pacman \
 					--needed \
 					--noconfirm \
 					-Syu \
-					$X
+					"$X"
 			fi
 		done
 	fi
-elif [ "$1" == "NO" ]
+elif [ "$1" = "NO" ]
 then
 	echo "Opted out from root mode"
 else
