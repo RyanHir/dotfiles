@@ -11,7 +11,6 @@ do
 	cd "${DIR}/nonroot/${X}" || exit
 	sh install.sh
 done
-#cd "$DIR" || exit
 
 if [ "$1" = "YES" ]
 then
@@ -19,7 +18,6 @@ then
 	do
 		cd "${DIR}/root/${X}" || exit
 		sh install.sh
-		#cd "${DIR}" || exit
 	done
 
 	if [ "$OS" = "arch" ]
