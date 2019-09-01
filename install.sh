@@ -25,7 +25,7 @@ do
 	sh install.sh
 done
 
-if echo "$1" | grep -iq "^n\|^n"
+if echo "$1" | grep -iq "^n"
 then
 	printf "No Root Mode\n"
 	exit
@@ -33,7 +33,8 @@ elif [ -z "$1" ] && question "Run Root Mode?"
 then
 	printf "No Root Mode\n"
 	exit
-else
+elif echo "$1" | grep -iq "^y"  
+then
 	for X in $ROOT
 	do
 		cd "${DIR}/root/${X}" || exit
@@ -67,4 +68,8 @@ else
 			fi
 		done
 	fi
+else
+	printf "An error has occured!\n"
+	printf "Please run command with the flag \"y\" or \"n\"\n"
+	printf "to enable or disable root mode.\n"
 fi
