@@ -8,3 +8,4 @@ then
 fi
 
 alias autoremove="sudo pacman -Rcns \$(pacman -Qdtq)"
+alias wifi="nmtui-connect"
