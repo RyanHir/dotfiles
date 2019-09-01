@@ -9,3 +9,7 @@ fi
 
 alias autoremove="sudo pacman -Rcns \$(pacman -Qdtq)"
 alias wifi="nmtui-connect"
+
+function device_ip() {
+	ip -o addr | awk '{if($3 == "inet") {gsub(/\/.*/,"");print $2 " " $4}}'
+}
