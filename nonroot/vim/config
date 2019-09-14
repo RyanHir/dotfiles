@@ -1,0 +1,15 @@
+set nocompatible
+
+filetype indent plugin on
+syntax on
+
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+set wildmenu
+ 
+set showcmd
+set hlsearch
+set ignorecase
+set smartcase
+ 
+set laststatus=2
