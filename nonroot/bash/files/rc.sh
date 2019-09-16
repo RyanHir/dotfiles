@@ -27,6 +27,8 @@ else
 	fi
 fi
 
+. /usr/share/bash-completion/bash_completion
+
 for sh in /etc/bash/bashrc.d/* ; do
 	[[ -r ${sh} ]] && source "${sh}"
 done
