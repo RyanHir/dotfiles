@@ -43,7 +43,7 @@ then
 	fi
 fi
 
-DEFAULT_SHELL=$(grep ^$(id -un): /etc/passwd | sed 's/.*://;s/.*\///')
+DEFAULT_SHELL=$(grep "^$USER:" /etc/passwd | sed 's/.*://;s/.*\///')
 
 if [ "$DEFAULT_SHELL" != "zsh" ]
 then
