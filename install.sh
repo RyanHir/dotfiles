@@ -8,25 +8,6 @@ function usage {
 
 export INSTALLPKG=false
 
-function install_pkg {
-	SUDO=""
-	if ! [ "$UID" = "0" ]
-	then
-		if ! command -v sudo
-		then
-			echo "Not ran as root"
-			exit
-		else
-			SUDO=sudo
-		fi
-	fi
-	if command -v apt-get
-	then
-		$SUDO apt-get install -y "${@}"
-	fi
-}
-
-
 while getopts ":h:p" o; do
 	case "${o}" in
 		h) usage; exit;;
@@ -35,22 +16,38 @@ while getopts ":h:p" o; do
 	esac
 done
 
-cd src || exit 3
-cp -r . "$HOME/"
-cd .. || exit 3
+{
+	cd src || exit 3
+	cp -r . "$HOME/"
+}
 
 PACKAGES=(zsh git fonts-noto)
 
 if $INSTALLPKG
 then
-	install_pkg "${PACKAGES[@]}"
+	SUDO=""
+	if ! [ "$UID" = "0" ]
+	then
+		if ! command -v sudo 1> /dev/null
+		then
+			echo "Not ran as root"
+			exit
+		else
+			SUDO=sudo
+		fi
+	fi
+	if command -v apt-get 1> /dev/null
+	then
+		$SUDO apt-get update -y -qq
+		$SUDO apt-get install -y -qq "${PACKAGES[@]}" || exit 4
+	fi
 fi
 
 DEFAULT_SHELL=$(grep ^$(id -un): /etc/passwd | sed 's/.*://;s/.*\///')
 
 if [ "$DEFAULT_SHELL" != "zsh" ]
 then
-	LOC=$(command -v zsh || exit 4)
+	LOC=$(command -v zsh || exit 5)
 	echo "Password Required to change shell"
 	chsh -s "$LOC"
 fi
