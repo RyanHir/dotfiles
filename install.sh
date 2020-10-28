@@ -7,11 +7,13 @@ function usage {
 }
 
 export INSTALLPKG=false
+export AUTOACCEPT=""
 
-while getopts ":h:p" o; do
+while getopts ":h:py" o; do
 	case "${o}" in
 		h) usage; exit;;
 		p) export INSTALLPKG=true;;
+		y) export AUTOACCEPT="-y";;
 		?) echo "Invalid Option: -$OPTARG"; usage; exit 2;;
 	esac
 done
@@ -25,7 +27,6 @@ PACKAGES=(zsh git fonts-noto)
 
 if $INSTALLPKG
 then
-	SUDO=""
 	if ! [ "$UID" = "0" ]
 	then
 		if ! command -v sudo 1> /dev/null
@@ -38,8 +39,8 @@ then
 	fi
 	if command -v apt-get 1> /dev/null
 	then
-		$SUDO apt-get update -y -qq
-		$SUDO apt-get install -y -qq "${PACKAGES[@]}" || exit 4
+		$SUDO apt-get update $AUTOACCEPT -qq
+		$SUDO apt-get install $AUTOACCEPT -qq "${PACKAGES[@]}" || exit 4
 	fi
 fi
 
