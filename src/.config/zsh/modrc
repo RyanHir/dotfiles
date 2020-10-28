@@ -1,0 +1,9 @@
+#! /usr/bin/env zsh
+
+autoload -U colors && colors
+zmodload zsh/complist
+autoload -U compinit && compinit
+zstyle ':completion:*' menu select
+colors
+_comp_options+=(globdots)
+

@@ -1,0 +1,10 @@
+#! /usr/bin/env zsh
+
+export LANG=en_US.UTF-8
+
+source "$HOME/.config/zsh/modrc"
+
+PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+
+source "$HOME/.config/aliasrc"
+source "$HOME/.config/zsh/bindrc"
