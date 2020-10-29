@@ -2,6 +2,7 @@
 
 [ -x "$(command -v nvim)" ] && alias vim="nvim" vimdiff="nvim -d"
 
+alias l="ls"
 alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 alias diff="diff --color=auto"
