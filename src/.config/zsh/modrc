@@ -1,9 +1,14 @@
 #! /usr/bin/env zsh
 
-autoload -U colors && colors
-zmodload zsh/complist
-autoload -U compinit && compinit
+autoload -Uz compinit	&& compinit
+autoload -Uz promptinit && promptinit
+autoload -Uz colors	&& colors
+
+setopt COMPLETE_ALIASES
+
+# Always rebuild cache
+zstyle ':completion:*' rehash true
+
+# Arrow driven interface
 zstyle ':completion:*' menu select
-colors
-_comp_options+=(globdots)
 
