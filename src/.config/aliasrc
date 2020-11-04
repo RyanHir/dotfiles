@@ -2,6 +2,8 @@
 
 [ -x "$(command -v nvim)" ] && alias vim="nvim" vimdiff="nvim -d"
 
+export CHROME_EXECUTABLE=/usr/bin/chromium
+
 alias l="ls"
 alias ls="ls --color=auto"
 alias grep="grep --color=auto"
