@@ -6,3 +6,7 @@ PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magent
 
 source "$HOME/.config/aliasrc"
 source "$HOME/.config/zsh/bindrc"
+
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.zsh_history
