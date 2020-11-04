@@ -1,0 +1,11 @@
+#! /bin/sh
+
+# set -e
+
+. "/sys/class/power_supply/BAT$id/uevent"
+
+if [ "$POWER_SUPPLY_TYPE" != "Battery" ]
+then exit 1
+fi
+
+echo "Batt $id: $POWER_SUPPLY_CAPACITY% $POWER_SUPPLY_CAPACITY_LEVEL"

@@ -1,0 +1,25 @@
+# Global properties
+separator=true
+separator_block_width=15
+markup=pango
+command=sh ~/.local/bin/statusbar/$BLOCK_NAME
+
+[battery]
+interval=15
+id=0
+
+[battery]
+interval=15
+id=1
+
+[hid_batt]
+label=Mouse
+interval=30
+id=0
+
+[volume]
+interval=1
+signal=10
+
+[clock]
+interval=1
