@@ -2,10 +2,6 @@
 
 set -e
 
-DEFAULT=$(pacmd stat | awk -F": " '/^Default sink name: /{print $2}')
-
-VOL=$(pacmd list-sinks | awk ' \
-    /^\s+name: /{indefault = $2 == "<'$DEFAULT'>"}
-    /^\s+volume: / && indefault {print $5}')
+VOL=$(pacmd dump-volumes | awk 'NR==1{print $8}')
 
 echo "Volume: $VOL"
