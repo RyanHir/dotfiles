@@ -1,6 +1,8 @@
 #! /bin/sh
 
-SINK_NAME=$(pacmd info | awk -F: '/Default sink/{print $2}' | tr -d " ")
-VOL=$(pacmd list-sinks | awk '/^\s+name: /{indefault = $2 == "<'$SINK_NAME'>"};/^\svolume: / && indefault {print $5}')
+. $HOME/.config/env
+
+SINK_NAME=$(get-pa-sink)
+VOL=$(get-pa-volume $SINK_NAME)
 
 echo "Volume: $VOL"

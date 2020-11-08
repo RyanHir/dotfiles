@@ -1,0 +1,14 @@
+#! /bin/sh
+
+usage() {
+    echo "Missing sink name as argument!"
+    echo "Run 'get-pa-sink' to get default sink!"
+    exit 1
+}
+
+if [ -z "$1" ]
+then
+    usage
+fi
+
+pacmd list-sinks | awk '/^\s+name: /{indefault = $2 == "<'$1'>"};/^\svolume: / && indefault {print $5}'

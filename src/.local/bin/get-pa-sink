@@ -1,0 +1,3 @@
+#! /bin/sh
+
+pacmd info | awk -F: '/Default sink/{print $2}' | tr -d " "
