@@ -31,3 +31,12 @@ else
 	echo "Cannot open /etc/passwd. Required to get default shell!"
 	echo "User must change shell on their own"
 fi
+
+# Reload i3 config if running
+if pgrep "^i3$" > /dev/null
+then
+	if ! i3-msg reload > /dev/null
+	then
+		echo "Error Reloading i3wm"
+	fi
+fi
