@@ -1,10 +1,6 @@
 #! /bin/sh
 
 SINK_NAME=$(pacmd info | awk -F: '/Default sink/{print $2}' | tr -d " ")
-SINK_ID=$(pactl list sinks short | awk "/$SINK_NAME/{print \$1}")
+VOL=$(pacmd list-sinks | awk '/^\s+name: /{indefault = $2 == "<'$SINK_NAME'>"};/^\svolume: / && indefault {print $5}')
 
-VOL=$(pamixer --sink $SINK_ID --get-volume)
-
-#VOL=$(pacmd dump-volumes | awk 'NR==1{print $8}')
-
-echo "Volume: $VOL%"
+echo "Volume: $VOL"
