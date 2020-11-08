@@ -13,8 +13,13 @@ while getopts ":h:py" o; do
 	esac
 done
 
+EXECS=$(grep -iIR "#\!.*sh" src | awk -F: '{print $1}')
+for file in $EXECS
+do
+	chmod +x $file || exit $?
+done
 cd src || exit $?
-	cp -r . "$HOME/"
+	cp --preserve=all -r . "$HOME/"
 cd - > /dev/null || exit $?
 
 if [ -r "/etc/passwd" ]
