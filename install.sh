@@ -1,9 +1,9 @@
-#! /bin/bash
+#! /bin/sh
 
-function usage {
+usage() {
 	EXEC_PATH=$(dirname "$0")
 	EXEC_NAME=$(basename "$0")
-	echo -e "$EXEC_PATH/$EXEC_NAME -h: Shows Help Message"
+	echo "$EXEC_PATH/$EXEC_NAME -h: Shows Help Message"
 }
 
 while getopts ":h:py" o; do
@@ -13,10 +13,10 @@ while getopts ":h:py" o; do
 	esac
 done
 
-EXECS=$(grep -iIR "#\!.*sh" src | awk -F: '{print $1}')
+EXECS=$(find src -type f -exec awk '/^#!.*sh$/{print FILENAME}' {} \;)
 for file in $EXECS
 do
-	chmod +x $file || exit $?
+	chmod +x "$file" || exit $?
 done
 cd src || exit $?
 	cp --preserve=all -r . "$HOME/"
