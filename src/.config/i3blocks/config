@@ -17,6 +17,9 @@ label=Mouse
 interval=30
 id=0
 
+[get-ip]
+interval=5
+
 [volume]
 interval=1
 signal=10

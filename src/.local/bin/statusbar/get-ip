@@ -1,0 +1,14 @@
+#! /bin/sh
+
+DEVICE=$(ip route get 1.1.1.1 | head -n1 | awk '{print $5;exit}')
+IPV4=$(ip a show "$DEVICE" | awk '/inet /{print $2}' | sed -E 's:/[0-9]([0-9]([0-9]|)|)::')
+IPV6=$(ip a show "$DEVICE" | awk '/inet6/{print $2}' | sed -E 's:/[0-9]([0-9]([0-9]|)|)::')
+
+if [ -n "$IPV4" ]; then
+	echo "$DEVICE: $IPV4"
+elif [ -n "$IPV6" ]; then
+	echo "$DEVICE: $IPV6"
+else
+	echo "$DEVICE: No Connection"
+fi
+
