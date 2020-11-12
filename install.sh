@@ -18,6 +18,18 @@ prompt() {
 	prompt "$1" # Retry prompt if bad answer
 }
 
+yay_fallback() {
+	YAY=yay
+	PACKAGES=$(sed "s/:aur//g" packages/arch.list | xargs)
+	if ! command -v "$YAY" > /dev/null; then
+		echo "Yay not detected, falling back to pacman."
+		echo "AUR Packages will not be installed."
+		YAY=sudo pacman
+		PACKAGES=$(sed "s/.*:aur//g" packages/arch.list | xargs)
+	fi
+	$YAY -Syu --noconfirm --needed $PACKAGES || exit $?
+}
+
 alias reload_i3="(command -v pgrep i3-msg && pgrep '^i3$' && i3-msg reload)"
 
 export AUTO_ACCEPT=false
@@ -50,6 +62,15 @@ if [ -r "/etc/passwd" ]; then
 else
 	echo "Cannot open /etc/passwd. Required to get default shell!"
 	echo "User must change shell on their own"
+fi
+OS=$(source /etc/os-release; echo "$ID")
+if [ "$OS" = "arch" ] && prompt "Install Packages"; then
+	yay_fallback || exit $?
+elif [ "$OS" = "ubuntu" -o "$OS" = "debian" ] && prompt "Install Packages"; then
+	echo "Debian Based Systems not supported yet."
+else
+	echo "Unknown Distro. Quitting."
+	exit 1
 fi
 
 # Reload i3 config if running

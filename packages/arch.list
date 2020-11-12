@@ -1,0 +1,12 @@
+i3-gaps
+termite
+acpilight
+xorg-server
+xorg-xinit
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+noto-fonts-extra
+betterlockscreen:aur
+tela-icon-theme:aur
+layan-gtk-theme-git:aur
