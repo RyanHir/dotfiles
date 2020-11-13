@@ -9,7 +9,7 @@ usage() {
 
 prompt() {
 	$AUTO_ACCEPT && return 0
-	printf "$1? [y/n] "
+	printf "%s? [y/n] " "$1"
 	read -r REPLY
 	REPLY=$(echo "$REPLY" | tr '[:upper:]' '[:lower:]')
 	[ "$REPLY" = "y" ] && return 0
@@ -27,7 +27,8 @@ yay_fallback() {
 		YAY=sudo pacman
 		PACKAGES=$(sed "s/.*:aur//g" packages/arch.list | xargs)
 	fi
-	$YAY -Syu --noconfirm --needed $PACKAGES || exit $?
+	$YAY -Syu --noconfirm
+	echo "$PACKAGES" | xargs $YAY -S --noconfirm --needed
 }
 
 alias reload_i3="(command -v pgrep i3-msg && pgrep '^i3$' && i3-msg reload)"
@@ -42,7 +43,7 @@ while getopts ":hy" o; do
 	esac
 done
 
-find src -type f -exec awk '/^#!.*sh$/{system("chmod +rwx " FILENAME)}' {} \;
+find src -type f -exec awk '/^#!.*sh$/{print FILENAME}' {} \; | xargs chmod +rwx
 if prompt "Overwrite Config Files"; then
 	cd src || exit $?
 		cp --preserve=all -r . "$HOME/"
@@ -51,7 +52,9 @@ fi
 
 if [ -r "/etc/passwd" ]; then
 	ZSH_PATH=$(command -v zsh || exit $?)
-	DEFAULT_SHELL=$(awk -F: "/^$USER:.*:$UID:$GID/{print \$7}" /etc/passwd)
+	_UID=$(id -u)
+	_GID=$(id -g)
+	DEFAULT_SHELL=$(awk -F: "/^$USER:.*:$_UID:$_GID/{print \$7}" /etc/passwd)
 
 	if [ "$DEFAULT_SHELL" != "$ZSH_PATH" ]; then
 		if prompt "Change Default Shell"; then
@@ -63,18 +66,20 @@ else
 	echo "Cannot open /etc/passwd. Required to get default shell!"
 	echo "User must change shell on their own"
 fi
-OS=$(source /etc/os-release; echo "$ID")
-if [ "$OS" = "arch" ] && prompt "Install Packages"; then
-	yay_fallback || exit $?
-elif [ "$OS" = "ubuntu" -o "$OS" = "debian" ] && prompt "Install Packages"; then
-	echo "Debian Based Systems not supported yet."
-else
-	echo "Unknown Distro. Quitting."
-	exit 1
+
+OS=$(. /etc/os-release; echo "$ID")
+if prompt "Install Packages"; then
+	if [ "$OS" = "arch" ]; then
+		yay_fallback || exit $?
+	elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
+		echo "Debian Based Systems not supported yet."
+	else
+		echo "Unknown Distro."
+	fi
 fi
 
 # Reload i3 config if running
-reload_i3 > /dev/null
+prompt "Reload i3" && reload_i3 > /dev/null
 
 systemctl --user daemon-reload
 systemctl --user enable --now pulseaudio
