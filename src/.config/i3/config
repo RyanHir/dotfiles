@@ -26,7 +26,7 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 20
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20
 
 bindsym Control+Print exec gnome-screenshot -i
-bindsym $mod+Escape exec xrandr --output eDP-1 --auto --output DP-2-1 --auto --left-of eDP-1
+bindsym $mod+Escape exec xrandr --output eDP-1 --auto --output DP-2-1 --auto --left-of eDP-1 && sh ~/.local/bin/set-wallpaper
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
