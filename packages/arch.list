@@ -9,3 +9,6 @@ noto-fonts-extra
 termite
 xorg-server
 xorg-xinit
+zsh
+zsh-autosuggestions
+zsh-syntax-highlighting
