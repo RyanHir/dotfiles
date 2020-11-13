@@ -2,12 +2,10 @@ acpilight
 betterlockscreen:aur
 feh
 i3-gaps
-layan-gtk-theme-git:aur
 noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
 noto-fonts-extra
-tela-icon-theme:aur
 termite
 xorg-server
 xorg-xinit
