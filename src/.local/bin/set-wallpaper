@@ -1,0 +1,8 @@
+#! /bin/sh
+
+if [ -r "$HOME/.cache/i3lock/current/wall.png" ]; then
+	feh --bg-fill "$HOME/.cache/i3lock/current/wall.png"
+else
+	echo "Could not find wallpaper"
+	exit -1
+fi
