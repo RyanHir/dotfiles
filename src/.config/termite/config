@@ -41,54 +41,55 @@ scrollback_lines = 10000
 #scrollbar = off
 
 [colors]
-# Base16 Gruvbox dark, medium
-# Author: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+# Base16 Solarized Dark
+# Author: Ethan Schoonover (modified by aramisgithub)
 
-foreground          = #d5c4a1
-foreground_bold     = #d5c4a1
-cursor              = #d5c4a1
-cursor_foreground   = #282828
-background          = #282828
+foreground          = #93a1a1
+foreground_bold     = #93a1a1
+cursor              = #93a1a1
+cursor_foreground   = #002b36
+background          = #002b36
 
 # 16 color space
 
 # Black, Gray, Silver, White
-color0  = #282828
-color8  = #665c54
-color7  = #d5c4a1
-color15 = #fbf1c7
+color0  = #002b36
+color8  = #657b83
+color7  = #93a1a1
+color15 = #fdf6e3
 
 # Red
-color1  = #fb4934
-color9  = #fb4934
+color1  = #dc322f
+color9  = #dc322f
 
 # Green
-color2  = #b8bb26
-color10 = #b8bb26
+color2  = #859900
+color10 = #859900
 
 # Yellow
-color3  = #fabd2f
-color11 = #fabd2f
+color3  = #b58900
+color11 = #b58900
 
 # Blue
-color4  = #83a598
-color12 = #83a598
+color4  = #268bd2
+color12 = #268bd2
 
 # Purple
-color5  = #d3869b
-color13 = #d3869b
+color5  = #6c71c4
+color13 = #6c71c4
 
 # Teal
-color6  = #8ec07c
-color14 = #8ec07c
+color6  = #2aa198
+color14 = #2aa198
 
 # Extra colors
-color16 = #fe8019
-color17 = #d65d0e
-color18 = #3c3836
-color19 = #504945
-color20 = #bdae93
-color21 = #ebdbb2
+color16 = #cb4b16
+color17 = #d33682
+color18 = #073642
+color19 = #586e75
+color20 = #839496
+color21 = #eee8d5
+
 
 [hints]
 #font = Monospace 12
