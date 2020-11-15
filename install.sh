@@ -45,7 +45,7 @@ while getopts ":hpy" o; do
 	esac
 done
 
-find src -type f -exec awk '/^#!.*sh$/{print FILENAME}' {} \; | xargs chmod +rwx
+grep -rl src -e "#\!.*sh" | xargs chmod +rwx
 if prompt "Overwrite Config Files"; then
 	cd src || exit $?
 		cp --preserve=all -r . "$HOME/"
