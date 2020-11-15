@@ -33,11 +33,13 @@ yay_fallback() {
 
 alias reload_i3="(command -v pgrep i3-msg && pgrep '^i3$' && i3-msg reload)"
 
+export ALLOW_PACKAGE=false
 export AUTO_ACCEPT=false
 
-while getopts ":hy" o; do
+while getopts ":hpy" o; do
 	case "${o}" in
 		h) usage; exit;;
+		p) export ALLOW_PACKAGE=true;;
 		y) export AUTO_ACCEPT=true;;
 		?) echo "Invalid Option: -$OPTARG"; usage; exit 2;;
 	esac
@@ -68,7 +70,7 @@ else
 fi
 
 OS=$(. /etc/os-release; echo "$ID")
-if prompt "Install Packages"; then
+if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	if [ "$OS" = "arch" ]; then
 		yay_fallback || exit $?
 	elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
