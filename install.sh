@@ -4,6 +4,7 @@ usage() {
 	EXEC_PATH=$(dirname "$0")
 	EXEC_NAME=$(basename "$0")
 	echo "$EXEC_PATH/$EXEC_NAME -h: Shows Help Message"
+	echo "$EXEC_PATH/$EXEC_NAME -p: Allow Package Install"
 	echo "$EXEC_PATH/$EXEC_NAME -y: Auto Accept Dialogs"
 }
 
