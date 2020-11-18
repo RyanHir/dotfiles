@@ -25,6 +25,7 @@ yay_fallback() {
 	if ! command -v "$YAY" > /dev/null; then
 		echo "Yay not detected, falling back to pacman."
 		echo "AUR Packages will not be installed."
+		echo "Go to https://github.com/Jguer/yay#installation for installation"
 		YAY=sudo pacman
 		PACKAGES=$(sed "s/.*:aur//g" packages/arch.list | xargs)
 	fi
