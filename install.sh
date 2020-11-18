@@ -86,3 +86,11 @@ prompt "Reload i3" && reload_i3 > /dev/null
 
 systemctl --user daemon-reload
 systemctl --user enable --now pulseaudio
+
+if ! systemctl status bluetooth > /dev/null; then
+	if prompt "Enable Bluetooth"; then
+		sudo systemctl daemon-reload
+		sudo systemctl enable --now bluetooth
+	fi
+fi
+

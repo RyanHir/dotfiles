@@ -1,6 +1,7 @@
 acpilight
 adapta-gtk-theme
 betterlockscreen:aur
+blueman
 feh
 i3-gaps
 i3blocks
@@ -9,6 +10,7 @@ noto-fonts-cjk
 noto-fonts-emoji
 noto-fonts-extra
 pulseaudio
+pulseaudio-bluetooth
 pulsemixer
 termite
 xorg-server
