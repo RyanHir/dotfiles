@@ -7,3 +7,4 @@ export LANG=en_US.UTF-8
 export LC_ALL="$LANG"
 export PATH=$PATH:$HOME/.local/bin/
 export TERM="xterm-256color"
+export CHROME_EXECUTABLE="/usr/bin/chromium"

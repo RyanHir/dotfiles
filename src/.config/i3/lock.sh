@@ -1,3 +1,3 @@
 #! /bin/sh
 
-betterlockscreen -l
+i3lock -c 5f5f5f
