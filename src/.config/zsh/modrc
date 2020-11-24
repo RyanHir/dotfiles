@@ -5,6 +5,7 @@ autoload -Uz promptinit && promptinit
 autoload -Uz colors	&& colors
 
 setopt COMPLETE_ALIASES
+setopt HIST_IGNORE_DUPS
 
 # Always rebuild cache
 zstyle ':completion:*' rehash true
