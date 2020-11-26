@@ -11,13 +11,18 @@ usage() {
 
 prompt() {
 	$AUTO_ACCEPT && return 0
-	printf "%s? [y/n] " "$1"
-	read -r REPLY
-	REPLY=$(echo "$REPLY" | tr '[:upper:]' '[:lower:]')
-	[ "$REPLY" = "y" ] && return 0
-	[ "$REPLY" = "n" ] && return 1
-	echo "Bad Answer, Try Again!"
-	prompt "$1" # Retry prompt if bad answer
+	if ! command -v whiptail > /dev/null; then
+		printf "%s? [y/n] " "$1"
+		read -r REPLY
+		REPLY=$(echo "$REPLY" | tr '[:upper:]' '[:lower:]')
+		[ "$REPLY" = "y" ] && return 0
+		[ "$REPLY" = "n" ] && return 1
+		echo "Bad Answer, Try Again!"
+		prompt "$1" # Retry prompt if bad answer
+	else
+		whiptail --title "$1" --yesno "" 5 50
+		return "$?"
+	fi
 }
 
 yay_fallback() {
