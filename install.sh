@@ -6,7 +6,7 @@ usage() {
 	echo "$EXEC_PATH/$EXEC_NAME -h: Shows Help Message"
 	echo "$EXEC_PATH/$EXEC_NAME -p: Allow Package Install"
 	echo "$EXEC_PATH/$EXEC_NAME -y: Auto Accept Dialogs"
-	echo "$EXEC_PATH/$EXEC_NAME -X: Overrides Xorg check and enables desktop tools"
+	echo "$EXEC_PATH/$EXEC_NAME -x: Overrides Xorg check and enables desktop tools"
 }
 
 prompt() {
