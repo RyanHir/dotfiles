@@ -6,6 +6,7 @@ usage() {
 	echo "$EXEC_PATH/$EXEC_NAME -h: Shows Help Message"
 	echo "$EXEC_PATH/$EXEC_NAME -p: Allow Package Install"
 	echo "$EXEC_PATH/$EXEC_NAME -y: Auto Accept Dialogs"
+	echo "$EXEC_PATH/$EXEC_NAME -X: Overrides Xorg check and enables desktop tools"
 }
 
 prompt() {
@@ -34,14 +35,21 @@ yay_fallback() {
 }
 
 alias reload_i3="(command -v pgrep i3-msg && pgrep '^i3$' && i3-msg reload)"
-
+check_systemd() {
+	systemctl status $@ > /dev/null
+}
+check_systemd_user() {
+	systemctl --user status $@ > /dev/null
+}
 export ALLOW_PACKAGE=false
+export ALLOW_XORG=false
 export AUTO_ACCEPT=false
 
-while getopts ":hpy" o; do
+while getopts ":hxpy" o; do
 	case "${o}" in
 		h) usage; exit;;
 		p) export ALLOW_PACKAGE=true;;
+		x) export ALLOW_XORG=true;;
 		y) export AUTO_ACCEPT=true;;
 		?) echo "Invalid Option: -$OPTARG"; usage; exit 2;;
 	esac
@@ -82,16 +90,21 @@ if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	fi
 fi
 
-# Reload i3 config if running
-prompt "Reload i3" && reload_i3 > /dev/null
-
-systemctl --user daemon-reload
-systemctl --user enable --now pulseaudio
-
-if ! systemctl status bluetooth > /dev/null; then
-	if prompt "Enable Bluetooth"; then
-		sudo systemctl daemon-reload
-		sudo systemctl enable --now bluetooth
+if $ALLOW_XORG || xset q &>/dev/null; then
+	# Reload i3 config if running
+	pgrep "i3$" >/dev/null && prompt "Reload i3" && reload_i3 > /dev/null
+	
+	if ! check_systemd_user pulseaudio && prompt "Enable Pulseaudio"
+	then
+		systemctl --user daemon-reload
+		systemctl --user enable --now pulseaudio
+	
+		if ! check_systemd bluetooth > /dev/null && prompt "Enable Bluetooth"; then
+			sudo systemctl daemon-reload
+			sudo systemctl enable --now bluetooth
+		fi
 	fi
+else
+	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
 
