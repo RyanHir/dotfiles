@@ -12,7 +12,7 @@ SELECTED_DEVICE=$(whiptail --clear --title "Select device to mount" --menu "" 24
 SELECTED_PATH=$(echo "$OPTIONS" | grep "$SELECTED_DEVICE" | awk '{print $2}')
 
 export PREFIX=sudo
-if (grep "/mnt/home" /etc/fstab | grep "users" > /dev/null); then
+if (grep "/mnt/home" /etc/fstab | grep "user" > /dev/null); then
 	export PREFIX=
 fi
 
