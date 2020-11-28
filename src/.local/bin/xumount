@@ -1,0 +1,19 @@
+#! /bin/sh
+
+set -e
+export PATH="$PATH:$HOME/.local/bin/"
+
+OPTIONS=$(get-mounts -n)
+SELECTED_DEVICE=$(whiptail --clear --title "Select device to unmount" --menu "" 24 80 16 $OPTIONS 3>&1 1>&2 2>&3)
+
+# exits with the "set -e" command
+[ -n "$SELECTED_DEVICE" ]
+
+SELECTED_PATH=$(mount | grep "$SELECTED_DEVICE" | awk '{print$3}')
+
+export PREFIX=sudo
+if (mount | grep "^$SELECTED_DEVICE" | grep -i "user" > /dev/null); then
+	export PREFIX=
+fi
+
+$PREFIX umount "$SELECTED_PATH"
