@@ -1,0 +1,19 @@
+#! /bin/sh
+
+set -e
+
+get_fstab() {
+	sed "/#.*/d;/^$/d" /etc/fstab | awk '{print$1" "$2}'
+	return $?
+}
+
+OPTIONS=$(get_fstab)
+SELECTED_DEVICE=$(whiptail --clear --title "Select device to mount" --menu "" 24 80 16 $OPTIONS 3>&1 1>&2 2>&3)
+SELECTED_PATH=$(echo "$OPTIONS" | grep "$SELECTED_DEVICE" | awk '{print $2}')
+
+export PREFIX=sudo
+if (grep "/mnt/home" /etc/fstab | grep "users" > /dev/null); then
+	export PREFIX=
+fi
+
+$PREFIX mount "$SELECTED_PATH"
