@@ -4,7 +4,7 @@ source "$HOME/.config/zsh/modrc"
 
 PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 
-if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+if command -v startx > /dev/null && [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
 	exec startx
 fi
 
