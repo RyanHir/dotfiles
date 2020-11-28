@@ -12,8 +12,8 @@ while getopts ":n" o; do
 done
 
 if $NO_FS; then
-mount | awk "/^\/dev/$WITHOUT_FS" | column -t
+mount | awk "/^\/dev/$WITHOUT_FS;/^\/\//$WITHOUT_FS" | column -t
 else
-mount | awk "/^\/dev/$WITH_FS" | column -t
+mount | awk "/^\/dev/$WITH_FS;/\/\//$WITH_FS" | column -t
 fi
 
