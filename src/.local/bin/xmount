@@ -7,7 +7,16 @@ get_fstab() {
 	return $?
 }
 
+export PATH="$PATH:$HOME/.local/bin/"
+
+CURR_MOUNTS=$(get-mounts | awk '{print$2}')
 OPTIONS=$(get_fstab)
+for MOUNT in $CURR_MOUNTS; do
+	OPTIONS=$(echo "$OPTIONS" | awk "{ if (\$2 != \"$MOUNT\") {print}}")
+done
+if [ -z "$OPTIONS" ]; then
+	echo "All mounts in /etc/fstab are active"
+fi
 SELECTED_DEVICE=$(whiptail --clear --title "Select device to mount" --menu "" 24 80 16 $OPTIONS 3>&1 1>&2 2>&3)
 SELECTED_PATH=$(echo "$OPTIONS" | grep "$SELECTED_DEVICE" | awk '{print $2}')
 
