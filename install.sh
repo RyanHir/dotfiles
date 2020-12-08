@@ -25,18 +25,9 @@ prompt() {
 	fi
 }
 
-yay_fallback() {
-	YAY=yay
-	PACKAGES=$(sed "s/:aur//g" packages/arch.list | xargs)
-	if ! command -v "$YAY" > /dev/null; then
-		echo "Yay not detected, falling back to pacman."
-		echo "AUR Packages will not be installed."
-		echo "Go to https://github.com/Jguer/yay#installation for installation"
-		YAY=sudo pacman
-		PACKAGES=$(sed "s/.*:aur//g" packages/arch.list | xargs)
-	fi
-	$YAY -Syu --noconfirm
-	echo "$PACKAGES" | xargs $YAY -S --noconfirm --needed
+pacman_install() {
+	sudo pacman -Syu
+	cat "packages/arch.list" | xargs sudo pacman -S --noconfirm --needed
 }
 
 alias reload_i3="(command -v pgrep i3-msg && pgrep '^i3$' && i3-msg reload)"
@@ -87,7 +78,7 @@ fi
 OS=$(. /etc/os-release; echo "$ID")
 if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	if [ "$OS" = "arch" ]; then
-		yay_fallback || exit $?
+		pacman_install || exit $?
 	elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
 		echo "Debian Based Systems not supported yet."
 	else
