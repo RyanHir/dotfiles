@@ -16,6 +16,7 @@ pulsemixer
 termite
 xorg-server
 xorg-xinit
+xorg-xset
 zsh
 zsh-autosuggestions
 zsh-syntax-highlighting
