@@ -25,13 +25,6 @@ prompt() {
 	fi
 }
 
-pacman_install() {
-	sudo pacman -Syu
-	xargs -a "packages/arch.list" sudo pacman -S --noconfirm --needed
-}
-
-alias reload_i3="(command -v pgrep i3-msg && pgrep '^i3$' && i3-msg reload)"
-
 check_systemd() {
 	systemctl status "$@" > /dev/null
 }
@@ -80,7 +73,8 @@ fi
 source /etc/os-release
 if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	if [ "$ID" = "arch" ]; then
-		pacman_install || exit $?
+		sudo pacman -Syu || exit $?
+		xargs -a "packages/arch.list" sudo pacman -S --noconfirm --needed || exit $?
 	elif [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
 		echo "Debian Based Systems not supported yet."
 	else
@@ -88,9 +82,11 @@ if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	fi
 fi
 
-if $ALLOW_XORG || xset q &>/dev/null; then
+if $ALLOW_XORG || (command -V xset && xset q) &>/dev/null; then
 	# Reload i3 config if running
-	pgrep "i3$" >/dev/null && prompt "Reload i3" && i3-msg reload > /dev/null
+	if pgrep "i3$" > /dev/null && prompt "Reload i3"; then
+		i3-msg reload > /dev/null
+	fi
 	
 	if ! check_systemd_user pulseaudio && prompt "Enable Pulseaudio"
 	then
@@ -110,7 +106,7 @@ if command -V locale > /dev/null; then
 	# shellcheck source=/dev/null
 	source <(locale)
 	if [ "$LANG" != "en_US.UTF-8" ]; then
-		sed "s/#en_US/en_US/;/#.*/d" /etc/locale.gen | sudo tee -a /etc/locale.gen
+		sudo sed -i "s/#en_US/en_US/;/#.*/d" /etc/locale.gen
 		sudo locale-gen
 		sudo localectl set-locale "LANG=en_US.UTF-8"
 	fi
