@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /usr/bin/env bash
 
 usage() {
 	EXEC_PATH=$(dirname "$0")
@@ -31,6 +31,7 @@ pacman_install() {
 }
 
 alias reload_i3="(command -v pgrep i3-msg && pgrep '^i3$' && i3-msg reload)"
+
 check_systemd() {
 	systemctl status $@ > /dev/null
 }
@@ -88,7 +89,7 @@ fi
 
 if $ALLOW_XORG || xset q &>/dev/null; then
 	# Reload i3 config if running
-	pgrep "i3$" >/dev/null && prompt "Reload i3" && reload_i3 > /dev/null
+	pgrep "i3$" >/dev/null && prompt "Reload i3" && i3-msg reload > /dev/null
 	
 	if ! check_systemd_user pulseaudio && prompt "Enable Pulseaudio"
 	then
@@ -104,3 +105,11 @@ else
 	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
 
+if command -V locale > /dev/null; then
+	source <(locale)
+	if [ "$LANG" != "en_US.UTF-8" ]; then
+		sed "s/#en_US/en_US/;/#.*/d" /etc/locale.gen | sudo tee -a /etc/locale.gen
+		sudo locale-gen
+		sudo localectl set-locale "LANG=en_US.UTF-8"
+	fi
+fi
