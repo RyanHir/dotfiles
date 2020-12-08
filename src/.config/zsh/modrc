@@ -6,6 +6,9 @@ autoload -Uz colors	&& colors
 
 setopt COMPLETE_ALIASES
 setopt HIST_IGNORE_DUPS
+#setopt noautomenu
+#
+zstyle ':completion:*:*:*:*:*' menu select
 
 # Always rebuild cache
 zstyle ':completion:*' rehash true

@@ -27,16 +27,16 @@ prompt() {
 
 pacman_install() {
 	sudo pacman -Syu
-	cat "packages/arch.list" | xargs sudo pacman -S --noconfirm --needed
+	xargs -a "packages/arch.list" sudo pacman -S --noconfirm --needed
 }
 
 alias reload_i3="(command -v pgrep i3-msg && pgrep '^i3$' && i3-msg reload)"
 
 check_systemd() {
-	systemctl status $@ > /dev/null
+	systemctl status "$@" > /dev/null
 }
 check_systemd_user() {
-	systemctl --user status $@ > /dev/null
+	systemctl --user status "$@" > /dev/null
 }
 export ALLOW_PACKAGE=false
 export ALLOW_XORG=false
@@ -76,11 +76,12 @@ else
 	echo "User must change shell on their own"
 fi
 
-OS=$(. /etc/os-release; echo "$ID")
+# shellcheck source=/dev/null
+source /etc/os-release
 if $ALLOW_PACKAGE && prompt "Install Packages"; then
-	if [ "$OS" = "arch" ]; then
+	if [ "$ID" = "arch" ]; then
 		pacman_install || exit $?
-	elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
+	elif [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
 		echo "Debian Based Systems not supported yet."
 	else
 		echo "Unknown Distro."
@@ -106,6 +107,7 @@ else
 fi
 
 if command -V locale > /dev/null; then
+	# shellcheck source=/dev/null
 	source <(locale)
 	if [ "$LANG" != "en_US.UTF-8" ]; then
 		sed "s/#en_US/en_US/;/#.*/d" /etc/locale.gen | sudo tee -a /etc/locale.gen
