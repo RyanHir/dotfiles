@@ -4,9 +4,10 @@ usage() {
 	EXEC_PATH=$(dirname "$0")
 	EXEC_NAME=$(basename "$0")
 	echo "$EXEC_PATH/$EXEC_NAME -h: Shows Help Message"
-	echo "$EXEC_PATH/$EXEC_NAME -p: Allow Package Install"
-	echo "$EXEC_PATH/$EXEC_NAME -y: Auto Accept Dialogs"
+	echo "$EXEC_PATH/$EXEC_NAME -l: bypass locale gen"
+	echo "$EXEC_PATH/$EXEC_NAME -p: allow package install"
 	echo "$EXEC_PATH/$EXEC_NAME -x: Overrides Xorg check and enables desktop tools"
+	echo "$EXEC_PATH/$EXEC_NAME -y: Auto Accept Dialogs"
 }
 
 prompt() {
@@ -31,13 +32,15 @@ check_systemd() {
 check_systemd_user() {
 	systemctl --user status "$@" > /dev/null
 }
+export DENY_LOCALE_GEN=false
 export ALLOW_PACKAGE=false
 export ALLOW_XORG=false
 export AUTO_ACCEPT=false
 
-while getopts ":hxpy" o; do
+while getopts ":hlpxy" o; do
 	case "${o}" in
 		h) usage; exit;;
+		l) export DENY_LOCALE_GEN=true;;
 		p) export ALLOW_PACKAGE=true;;
 		x) export ALLOW_XORG=true;;
 		y) export AUTO_ACCEPT=true;;
@@ -105,7 +108,7 @@ fi
 if command -V locale > /dev/null; then
 	# shellcheck source=/dev/null
 	source <(locale)
-	if [ "$LANG" != "en_US.UTF-8" ]; then
+	if [ "$LANG" != "en_US.UTF-8" ] && ! $DENY_LOCALE_GEN; then
 		sudo sed -i "s/#en_US/en_US/;/#.*/d" /etc/locale.gen
 		sudo locale-gen
 		sudo localectl set-locale "LANG=en_US.UTF-8"
