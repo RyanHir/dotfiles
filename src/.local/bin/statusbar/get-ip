@@ -9,6 +9,6 @@ if [ -n "$IPV4" ]; then
 elif [ -n "$IPV6" ]; then
 	echo "$DEVICE: $IPV6"
 else
-	echo "$DEVICE: No Connection"
+	exit 1
 fi
 
