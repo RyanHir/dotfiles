@@ -75,7 +75,7 @@ else
 fi
 
 # shellcheck source=/dev/null
-source /etc/os-release
+source <(cat /etc/*release)
 if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	if [ "$ID" = "arch" ]; then
 		sudo pacman -Syu || exit $?
