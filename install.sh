@@ -58,15 +58,15 @@ if prompt "Overwrite Config Files"; then
 fi
 
 if [ -r "/etc/passwd" ]; then
-	ZSH_PATH=$(command -v zsh || exit $?)
+	SHELL_PATH="/bin/bash"
 	_UID=$(id -u)
 	_GID=$(id -g)
 	DEFAULT_SHELL=$(awk -F: "/^$USER:.*:$_UID:$_GID/{print \$7}" /etc/passwd)
 
-	if [ "$DEFAULT_SHELL" != "$ZSH_PATH" ]; then
+	if [ "$DEFAULT_SHELL" != "$SHELL_PATH" ]; then
 		if prompt "Change Default Shell"; then
 			echo "Password Required to change shell"
-			chsh -s "$ZSH_PATH"
+			chsh -s "$SHELL_PATH"
 		fi
 	fi
 else

@@ -1,0 +1,12 @@
+#! /usr/bin/env bash
+
+if command -v startx > /dev/null && [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+	exec startx
+fi
+
+source "$HOME/.config/bash/promptrc"
+source "$HOME/.config/env"
+source "$HOME/.config/aliasrc"
+
+[[ "$PS1" && -f /usr/share/bash-completion/bash_completion ]] && \
+	. /usr/share/bash-completion/bash_completion
