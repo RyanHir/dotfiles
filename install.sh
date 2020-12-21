@@ -34,14 +34,16 @@ check_systemd_user() {
 }
 export DENY_LOCALE_GEN=false
 export ALLOW_PACKAGE=false
+export ALLOW_ROOT_MOD=false
 export ALLOW_XORG=false
 export AUTO_ACCEPT=false
 
-while getopts ":hlpxy" o; do
+while getopts ":hlprxy" o; do
 	case "${o}" in
 		h) usage; exit;;
 		l) export DENY_LOCALE_GEN=true;;
 		p) export ALLOW_PACKAGE=true;;
+		r) export ALLOW_ROOT_MOD=true;;
 		x) export ALLOW_XORG=true;;
 		y) export AUTO_ACCEPT=true;;
 		?) echo "Invalid Option: -$OPTARG"; usage; exit 2;;
@@ -103,6 +105,17 @@ if $ALLOW_XORG || (command -V xset && xset q) &>/dev/null; then
 	fi
 else
 	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
+fi
+
+if $ALLOW_ROOT_MOD; then
+	groups | grep video > /dev/null || sudo usermod -aG video "$USER"
+	UDEV_PATH="/etc/udev/rules.d/backlight.rules"
+	UDEV_PATH_DEFAULT="/etc/udev/rules.d/81-backlight.rules"
+	UDEV_TEMPLATE='ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="acpi_video0"'
+
+	[ -e "$UDEV_PATH" ] || echo "Reboot when complete to fix backlight controls"
+	echo "$UDEV_TEMPLATE, GROUP=\"video\", MODE=\"0664\"" | sudo tee "$UDEV_PATH"
+	echo "$UDEV_TEMPLATE, ATTR{brightness}=\"8\"" | sudo tee "$UDEV_PATH_DEFAULT"
 fi
 
 if command -V locale > /dev/null; then
