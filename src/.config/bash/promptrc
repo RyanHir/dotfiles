@@ -7,4 +7,4 @@ _BLUE="\[\033[1;94m\]"
 _PURPLE="\[\033[1;35m\]"
 _CLEAR="\[$(tput sgr0)\]"
 
-PS1="$_RED[$_ORANGE\u$_GREEN@$_BLUE\h $_PURPLE\W$_RED]$_CLEAR$ "
+PS1="$_RED[$_ORANGE\u$_GREEN@$_BLUE\h $_PURPLE\w$_RED]$_CLEAR$ "
