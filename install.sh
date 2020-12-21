@@ -75,8 +75,9 @@ else
 fi
 
 # shellcheck source=/dev/null
-source <(cat /etc/*release)
-if $ALLOW_PACKAGE && prompt "Install Packages"; then
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	source <(cat /etc/*release)
+	if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	if [ "$ID" = "arch" ]; then
 		sudo pacman -Syu || exit $?
 		xargs -a "packages/arch.list" \
@@ -86,6 +87,9 @@ if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	else
 		echo "Unknown Distro."
 	fi
+	fi
+else
+	echo "Package installation only supported on GNU/Linux"
 fi
 
 if $ALLOW_XORG || (command -V xset && xset q) &>/dev/null; then
