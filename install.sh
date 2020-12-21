@@ -79,7 +79,8 @@ source /etc/os-release
 if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	if [ "$ID" = "arch" ]; then
 		sudo pacman -Syu || exit $?
-		xargs -a "packages/arch.list" sudo pacman -S --noconfirm --needed || exit $?
+		xargs -a "packages/arch.list" \
+			sudo pacman -S --noconfirm --needed || exit $?
 	elif [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
 		echo "Debian Based Systems not supported yet."
 	else
@@ -113,9 +114,12 @@ if $ALLOW_ROOT_MOD; then
 	UDEV_PATH_DEFAULT="/etc/udev/rules.d/81-backlight.rules"
 	UDEV_TEMPLATE='ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="acpi_video0"'
 
-	[ -e "$UDEV_PATH" ] || echo "Reboot when complete to fix backlight controls"
-	echo "$UDEV_TEMPLATE, GROUP=\"video\", MODE=\"0664\"" | sudo tee "$UDEV_PATH"
-	echo "$UDEV_TEMPLATE, ATTR{brightness}=\"8\"" | sudo tee "$UDEV_PATH_DEFAULT"
+	[ -e "$UDEV_PATH" ] || \
+		echo "Reboot when complete to fix backlight controls"
+	echo "$UDEV_TEMPLATE, GROUP=\"video\", MODE=\"0664\"" \
+		| sudo tee "$UDEV_PATH"
+	echo "$UDEV_TEMPLATE, ATTR{brightness}=\"8\"" \
+		| sudo tee "$UDEV_PATH_DEFAULT"
 fi
 
 if command -V locale > /dev/null; then
