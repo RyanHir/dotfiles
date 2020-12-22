@@ -32,10 +32,6 @@ check_systemd() {
 check_systemd_user() {
 	systemctl --user status "$@" > /dev/null
 }
-check_is_linux() {
-	[[ "$OSTYPE" == "linux-gnu"* ]]
-	return $?
-}
 export DENY_LOCALE_GEN=false
 export ALLOW_PACKAGE=false
 export ALLOW_ROOT_MOD=false
@@ -79,7 +75,8 @@ else
 fi
 
 # shellcheck source=/dev/null
-if check_is_linux && $ALLOW_PACKAGE && prompt "Install Packages"; then
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	source <(cat /etc/*release)
 	[ -z "$ID_LIKE" ] || ID="$ID_LIKE"
 	case "$ID" in
@@ -88,18 +85,14 @@ if check_is_linux && $ALLOW_PACKAGE && prompt "Install Packages"; then
 		xargs -a "packages/arch.list" \
 			sudo pacman -S --noconfirm --needed || exit $?
 	;;
-	debian)
-		echo "Debian Package Support Not Yet Supported"
-	;;
-	*)
-		echo "Unknown Distro: $ID"
-	;;
+	debian) echo "Debian Package Support Not Yet Supported";;
+	*) echo "Unknown Distro: $ID";;
 	esac
 else
 	check_is_linux || echo "WARNING: Package installation only supported on GNU/Linux"
 fi
 
-if check_is_linux && ($ALLOW_XORG || (command -V xset && xset q) &>/dev/null); then
+if ($ALLOW_XORG || (command -V xset && xset q) &>/dev/null); then
 	# Reload i3 config if running
 	if pgrep "i3$" > /dev/null && prompt "Reload i3"; then
 		i3-msg reload > /dev/null
@@ -119,8 +112,7 @@ else
 	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
 
-if check_is_linux && $ALLOW_ROOT_MOD \
-	&& prompt "ROOT: Patches For Backlight Support"; then
+if $ALLOW_ROOT_MOD && prompt "ROOT: Patches For Backlight Support"; then
 	groups | grep video > /dev/null || sudo usermod -aG video "$USER"
 	UDEV_PATH="/etc/udev/rules.d/backlight.rules"
 	UDEV_PATH_DEFAULT="/etc/udev/rules.d/81-backlight.rules"
@@ -134,7 +126,7 @@ if check_is_linux && $ALLOW_ROOT_MOD \
 		| sudo tee "$UDEV_PATH_DEFAULT"
 fi
 
-if check_is_linux && command -V locale > /dev/null; then
+if command -V locale > /dev/null; then
 	# shellcheck source=/dev/null
 	source <(locale)
 	if [ "$LANG" != "en_US.UTF-8" ] && ! $DENY_LOCALE_GEN; then
@@ -143,3 +135,4 @@ if check_is_linux && command -V locale > /dev/null; then
 		sudo localectl set-locale "LANG=en_US.UTF-8"
 	fi
 fi
+fi # end linux specific
