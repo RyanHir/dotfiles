@@ -112,7 +112,8 @@ else
 	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
 
-if $ALLOW_ROOT_MOD; then
+if $ALLOW_ROOT_MOD && [[ "$OSTYPE" == "linux-gnu"* ]] \
+	&& prompt "ROOT: Patches For Backlight Support"; then
 	groups | grep video > /dev/null || sudo usermod -aG video "$USER"
 	UDEV_PATH="/etc/udev/rules.d/backlight.rules"
 	UDEV_PATH_DEFAULT="/etc/udev/rules.d/81-backlight.rules"
