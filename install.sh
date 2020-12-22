@@ -32,6 +32,10 @@ check_systemd() {
 check_systemd_user() {
 	systemctl --user status "$@" > /dev/null
 }
+check_is_linux() {
+	[[ "$OSTYPE" == "linux-gnu"* ]]
+	return $?
+}
 export DENY_LOCALE_GEN=false
 export ALLOW_PACKAGE=false
 export ALLOW_ROOT_MOD=false
@@ -49,8 +53,6 @@ while getopts ":hlprxy" o; do
 		?) echo "Invalid Option: -$OPTARG"; usage; exit 2;;
 	esac
 done
-
-IS_LINUX="[[ '$OSTYPE' == 'linux-gnu'* ]]"
 
 grep -rl src -e "#\!.*sh" | xargs chmod +rwx
 if prompt "Overwrite Config Files"; then
@@ -77,24 +79,27 @@ else
 fi
 
 # shellcheck source=/dev/null
-if $IS_LINUX; then
+if check_is_linux && $ALLOW_PACKAGE && prompt "Install Packages"; then
 	source <(cat /etc/*release)
-	if $ALLOW_PACKAGE && prompt "Install Packages"; then
-	if [ "$ID" = "arch" ]; then
+	[ -z "$ID_LIKE" ] || ID="$ID_LIKE"
+	case "$ID" in
+	arch)
 		sudo pacman -Syu || exit $?
 		xargs -a "packages/arch.list" \
 			sudo pacman -S --noconfirm --needed || exit $?
-	elif [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
-		echo "Debian Based Systems not supported yet."
-	else
-		echo "Unknown Distro."
-	fi
-	fi
+	;;
+	debian)
+		echo "Debian Package Support Not Yet Supported"
+	;;
+	*)
+		echo "Unknown Distro: $ID"
+	;;
+	esac
 else
-	echo "Package installation only supported on GNU/Linux"
+	check_is_linux || echo "WARNING: Package installation only supported on GNU/Linux"
 fi
 
-if $IS_LINUX && ($ALLOW_XORG || (command -V xset && xset q) &>/dev/null); then
+if check_is_linux && ($ALLOW_XORG || (command -V xset && xset q) &>/dev/null); then
 	# Reload i3 config if running
 	if pgrep "i3$" > /dev/null && prompt "Reload i3"; then
 		i3-msg reload > /dev/null
@@ -114,7 +119,7 @@ else
 	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
 
-if $ALLOW_ROOT_MOD && $IS_LINUX \
+if check_is_linux && $ALLOW_ROOT_MOD \
 	&& prompt "ROOT: Patches For Backlight Support"; then
 	groups | grep video > /dev/null || sudo usermod -aG video "$USER"
 	UDEV_PATH="/etc/udev/rules.d/backlight.rules"
@@ -129,7 +134,7 @@ if $ALLOW_ROOT_MOD && $IS_LINUX \
 		| sudo tee "$UDEV_PATH_DEFAULT"
 fi
 
-if command -V locale > /dev/null; then
+if check_is_linux && command -V locale > /dev/null; then
 	# shellcheck source=/dev/null
 	source <(locale)
 	if [ "$LANG" != "en_US.UTF-8" ] && ! $DENY_LOCALE_GEN; then
