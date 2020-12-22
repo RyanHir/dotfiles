@@ -50,6 +50,8 @@ while getopts ":hlprxy" o; do
 	esac
 done
 
+IS_LINUX="[[ '$OSTYPE' == 'linux-gnu'* ]]"
+
 grep -rl src -e "#\!.*sh" | xargs chmod +rwx
 if prompt "Overwrite Config Files"; then
 	cd src || exit $?
@@ -75,7 +77,7 @@ else
 fi
 
 # shellcheck source=/dev/null
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+if $IS_LINUX; then
 	source <(cat /etc/*release)
 	if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	if [ "$ID" = "arch" ]; then
@@ -112,7 +114,7 @@ else
 	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
 
-if $ALLOW_ROOT_MOD && [[ "$OSTYPE" == "linux-gnu"* ]] \
+if $ALLOW_ROOT_MOD && $IS_LINUX \
 	&& prompt "ROOT: Patches For Backlight Support"; then
 	groups | grep video > /dev/null || sudo usermod -aG video "$USER"
 	UDEV_PATH="/etc/udev/rules.d/backlight.rules"
