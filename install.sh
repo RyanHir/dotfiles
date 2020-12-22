@@ -59,9 +59,7 @@ fi
 
 if [ -r "/etc/passwd" ]; then
 	SHELL_PATH="/bin/bash"
-	_UID=$(id -u)
-	_GID=$(id -g)
-	DEFAULT_SHELL=$(awk -F: "/^$USER:.*:$_UID:$_GID/{print \$7}" /etc/passwd)
+	DEFAULT_SHELL=$(grep "^$USER:" /etc/passwd | cut -d: -f7)
 
 	if [ "$DEFAULT_SHELL" != "$SHELL_PATH" ]; then
 		if prompt "Change Default Shell"; then
@@ -78,8 +76,8 @@ fi
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	source <(cat /etc/*release)
-	[ -z "$ID_LIKE" ] || ID="$ID_LIKE"
-	case "$ID" in
+	[ -n "$ID_LIKE" ] && ID="$ID_LIKE"
+	case "$(echo "$ID" | tr '[:upper:]' '[:lower:]')" in
 	arch)
 		sudo pacman -Syu || exit $?
 		xargs -a "packages/arch.list" \
@@ -88,8 +86,6 @@ if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	debian) echo "Debian Package Support Not Yet Supported";;
 	*) echo "Unknown Distro: $ID";;
 	esac
-else
-	check_is_linux || echo "WARNING: Package installation only supported on GNU/Linux"
 fi
 
 if ($ALLOW_XORG || (command -V xset && xset q) &>/dev/null); then
