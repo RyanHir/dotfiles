@@ -94,7 +94,7 @@ else
 	echo "Package installation only supported on GNU/Linux"
 fi
 
-if $ALLOW_XORG || (command -V xset && xset q) &>/dev/null; then
+if $IS_LINUX && ($ALLOW_XORG || (command -V xset && xset q) &>/dev/null); then
 	# Reload i3 config if running
 	if pgrep "i3$" > /dev/null && prompt "Reload i3"; then
 		i3-msg reload > /dev/null
