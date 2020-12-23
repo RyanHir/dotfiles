@@ -5,6 +5,7 @@ usage() {
 	EXEC_NAME=$(basename "$0")
 	echo "$EXEC_PATH/$EXEC_NAME -h: Shows Help Message"
 	echo "$EXEC_PATH/$EXEC_NAME -l: bypass locale gen"
+	echo "$EXEC_PATH/$EXEC_NAME -t: do not affect gui"
 	echo "$EXEC_PATH/$EXEC_NAME -p: allow package install"
 	echo "$EXEC_PATH/$EXEC_NAME -x: Overrides Xorg check and enables desktop tools"
 	echo "$EXEC_PATH/$EXEC_NAME -y: Auto Accept Dialogs"
@@ -33,15 +34,17 @@ check_systemd_user() {
 	systemctl --user status "$@" > /dev/null
 }
 export DENY_LOCALE_GEN=false
+export DENY_XORG_CONFIG=false
 export ALLOW_PACKAGE=false
 export ALLOW_ROOT_MOD=false
 export ALLOW_XORG=false
 export AUTO_ACCEPT=false
 
-while getopts ":hlprxy" o; do
+while getopts ":hltprxy" o; do
 	case "${o}" in
 		h) usage; exit;;
 		l) export DENY_LOCALE_GEN=true;;
+		t) export DENY_XORG_CONFIG=true;;
 		p) export ALLOW_PACKAGE=true;;
 		r) export ALLOW_ROOT_MOD=true;;
 		x) export ALLOW_XORG=true;;
@@ -52,9 +55,21 @@ done
 
 grep -rl src -e "#\!.*sh" | xargs chmod +rwx
 if prompt "Overwrite Config Files"; then
-	cd src || exit $?
+	if $DENY_XORG_CONFIG; then
+	(
+		cd src || exit $?
+		FILES=$(find . -type f -o -type l | grep -v ".x\|gtk")
+		for FILE in $FILES; do
+			mkdir -p "$(dirname "$FILE")" 
+			cp "$FILE" "$HOME/$(dirname "$FILE")"
+		done
+	)
+	else
+	(
+		cd src || exit $?
 		cp --preserve=all -r . "$HOME/"
-	cd - > /dev/null || exit $?
+	)
+	fi	
 fi
 
 if [ -r "/etc/passwd" ]; then
@@ -88,7 +103,7 @@ if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	esac
 fi
 
-if ($ALLOW_XORG || (command -V xset && xset q) &>/dev/null); then
+if ( ($ALLOW_XORG && ! $DENY_XORG_CONFIG) || (command -V xset && xset q) &>/dev/null); then
 	# Reload i3 config if running
 	if pgrep "i3$" > /dev/null && prompt "Reload i3"; then
 		i3-msg reload > /dev/null
