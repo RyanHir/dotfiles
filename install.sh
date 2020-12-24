@@ -1,10 +1,9 @@
 #! /usr/bin/env bash
 
 usage() {
-	EXEC_NAME=$(basename "$0")
 	cat << EOF
 Usage:
-    ./$EXEC_NAME [ARGS]
+    ./$(basename "$0") [ARGS]
 Args:
     -h	Shows This Help Message
     -l	Bypass Locale Generation
