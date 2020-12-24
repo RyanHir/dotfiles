@@ -1,11 +1,12 @@
-#! /bin/sh
+#! /usr/bin/env bash
 
-# set -e
+set -e
+cd /sys/class/power_supply/BAT$id
+[ "$(cat type)" = "Battery" ]
 
-. "/sys/class/power_supply/BAT$id/uevent"
+MAX=$(cat energy_full)
+NOW=$(cat energy_now)
+STATUS=$(cat status)
+CHARGE=$(python3 -c "print(round($NOW / $MAX * 100, 2))")
 
-if [ "$POWER_SUPPLY_TYPE" != "Battery" ]
-then exit 1
-fi
-
-echo "Batt $id: $POWER_SUPPLY_CAPACITY% $POWER_SUPPLY_CAPACITY_LEVEL"
+echo "Batt $id: $CHARGE% $STATUS"
