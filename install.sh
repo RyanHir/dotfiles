@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+export NEWT_COLORS_FILE="$(dirname "$0")/src/.config/whiptail.env"
+
 usage() {
 	cat << EOF
 Usage:

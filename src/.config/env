@@ -8,3 +8,4 @@ export LC_ALL="$LANG"
 export PATH=$PATH:$HOME/.local/bin/
 export TERM="xterm-256color"
 export CHROME_EXECUTABLE="/usr/bin/chromium"
+export NEWT_COLORS_FILE="$HOME/.config/whiptail.env"
