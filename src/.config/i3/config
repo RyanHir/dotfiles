@@ -13,7 +13,7 @@ set $mod Mod4
 
 exec --no-startup-id blueman-applet
 exec --no-startup-id dunst
-exec --no-startup-id picom
+exec --no-startup-id picom -b
 exec --no-startup-id sh ~/.config/i3/wallpaper.sh 1 
 exec --no-startup-id sh ~/.config/i3/display.sh
 
