@@ -1,14 +1,18 @@
 #! /usr/bin/env bash
 
 usage() {
-	EXEC_PATH=$(dirname "$0")
 	EXEC_NAME=$(basename "$0")
-	echo "$EXEC_PATH/$EXEC_NAME -h: Shows Help Message"
-	echo "$EXEC_PATH/$EXEC_NAME -l: bypass locale gen"
-	echo "$EXEC_PATH/$EXEC_NAME -t: do not affect gui"
-	echo "$EXEC_PATH/$EXEC_NAME -p: allow package install"
-	echo "$EXEC_PATH/$EXEC_NAME -x: Overrides Xorg check and enables desktop tools"
-	echo "$EXEC_PATH/$EXEC_NAME -y: Auto Accept Dialogs"
+	cat << EOF
+Usage:
+    ./$EXEC_NAME [ARGS]
+Args:
+    -h	Shows This Help Message
+    -l	Bypass Locale Generation
+    -t	Do not affect xorg/gtk settings
+    -p	Enable Package Installation, Extention of -y
+    -x	Overrides XOrg Check and enabled extra services
+    -y	Auto Accept Dialogs
+EOF
 }
 
 prompt() {
