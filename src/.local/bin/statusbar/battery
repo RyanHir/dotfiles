@@ -9,4 +9,9 @@ NOW=$(cat energy_now)
 STATUS=$(cat status)
 CHARGE=$(python3 -c "print(round($NOW / $MAX * 100, 2))")
 
-echo "Batt $id: $CHARGE% $STATUS"
+if command -V acpi > /dev/null; then
+	TIMELEFT=$(acpi | awk "/Battery $id/"'{print $5}')
+	[ -n "$TIMELEFT" ] && TIMELEFT=" $TIMELEFT"
+fi
+
+echo "Batt $id: $CHARGE% $STATUS$TIMELEFT"
