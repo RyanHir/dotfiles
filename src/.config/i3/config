@@ -25,8 +25,8 @@ font pango:DejaVu Sans Mono 10
 #gaps inner 5
 #gaps outer 5
 
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+bindsym XF86MonBrightnessUp exec xbacklight -inc 5
+bindsym XF86MonBrightnessDown exec xbacklight -dec 5
 
 bindsym Control+Print exec gnome-screenshot -i
 bindsym $mod+Escape exec sh ~/.config/i3/display.sh && sh ~/.local/bin/set-wallpaper
