@@ -1,5 +1,9 @@
 #! /bin/sh
 
+if [ -n "$BASH_VERSION" ] && [ -f "$HOME/.bashrc" ]; then
+    source "$HOME/.bashrc"
+fi
+
 export CC=gcc
 export CXX=g++
 export EDITOR=vim
