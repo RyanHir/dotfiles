@@ -1,8 +1,12 @@
 #! /bin/sh
 
-if [ -r "$HOME/.config/wall.png" ]; then
-	feh --bg-fill "/usr/share/wallpapers/deepin/desktop.jpg"
+cd /usr/share/wallpapers
+
+if [ -r "elementary/Luca Bravo.jpg" ]; then
+    feh --bg-fill "elementary/Luca Bravo.jpg"
+elif [ -r "deepin/desktop.jpg" ]; then
+    feh --bg-fill "deepin/desktop.jpg"
 else
-	echo "Could not find wallpaper"
-	exit -1
+    echo "Could not find wallpaper"
+    exit -1
 fi
