@@ -17,19 +17,19 @@ EOF
 }
 
 prompt() {
-	$AUTO_ACCEPT && return 0
-	if ! command -v whiptail > /dev/null; then
-		printf "%s? [y/n] " "$1"
-		read -r REPLY
-		REPLY=$(echo "$REPLY" | tr '[:upper:]' '[:lower:]')
-		[ "$REPLY" = "y" ] && return 0
-		[ "$REPLY" = "n" ] && return 1
-		echo "Bad Answer, Try Again!"
-		prompt "$1" # Retry prompt if bad answer
-	else
-		whiptail --title "$1" --yesno "" 5 50
-		return "$?"
-	fi
+    $AUTO_ACCEPT && return 0
+    if ! command -v whiptail > /dev/null; then
+	printf "%s? [y/n] " "$1"
+	read -r REPLY
+	REPLY=$(echo "$REPLY" | tr '[:upper:]' '[:lower:]')
+	[ "$REPLY" = "y" ] && return 0
+	[ "$REPLY" = "n" ] && return 1
+	echo "Bad Answer, Try Again!"
+	prompt "$1" # Retry prompt if bad answer
+    else
+	whiptail --title "$1" --yesno "" 5 50
+	return "$?"
+    fi
 }
 
 quiet_run_as() {
@@ -39,10 +39,10 @@ quiet_run_as() {
 export -f quiet_run_as
 
 check_systemd() {
-	systemctl status "$@" > /dev/null
+    systemctl status "$@" > /dev/null
 }
 check_systemd_user() {
-	systemctl --user status "$@" > /dev/null
+    systemctl --user status "$@" > /dev/null
 }
 export DENY_LOCALE_GEN=false
 export DENY_XORG_CONFIG=false
@@ -52,66 +52,66 @@ export ALLOW_XORG=false
 export AUTO_ACCEPT=false
 
 while getopts ":hltprxy" o; do
-	case "${o}" in
-		h) usage; exit;;
-		l) export DENY_LOCALE_GEN=true;;
-		t) export DENY_XORG_CONFIG=true;;
-		p) export ALLOW_PACKAGE=true;;
-		r) export ALLOW_ROOT_MOD=true;;
-		x) export ALLOW_XORG=true;;
-		y) export AUTO_ACCEPT=true;;
-		?) echo "Invalid Option: -$OPTARG"; usage; exit 2;;
-	esac
+    case "${o}" in
+	h) usage; exit;;
+	l) export DENY_LOCALE_GEN=true;;
+	t) export DENY_XORG_CONFIG=true;;
+	p) export ALLOW_PACKAGE=true;;
+	r) export ALLOW_ROOT_MOD=true;;
+	x) export ALLOW_XORG=true;;
+	y) export AUTO_ACCEPT=true;;
+	?) echo "Invalid Option: -$OPTARG"; usage; exit 2;;
+    esac
 done
 
 grep -rl src -e "#\!.*sh" | xargs chmod +rwx
 if prompt "Overwrite Config Files"; then
-	if $DENY_XORG_CONFIG; then
-	(
-		cd src || exit $?
-		FILES=$(find . -type f -o -type l | grep -v ".x\|gtk")
-		for FILE in $FILES; do
-			mkdir -p "$(dirname "$FILE")" 
-			cp "$FILE" "$HOME/$(dirname "$FILE")"
-		done
-	)
-	else
-	(
-		cd src || exit $?
-		cp --preserve=all -r . "$HOME/"
-	)
-	fi	
+    if $DENY_XORG_CONFIG; then
+    (
+	cd src || exit $?
+	FILES=$(find . -type f -o -type l | grep -v ".x\|gtk")
+	for FILE in $FILES; do
+	    mkdir -p "$(dirname "$FILE")" 
+	    cp "$FILE" "$HOME/$(dirname "$FILE")"
+	done
+    )
+    else
+    (
+	cd src || exit $?
+	cp --preserve=all -r . "$HOME/"
+    )
+    fi	
 fi
 
 if [ -r "/etc/passwd" ]; then
-	SHELL_="$(command -v zsh)"
-	DEFAULT_SHELL=$(grep "^$USER:" /etc/passwd | cut -d: -f7)
+    SHELL_="$(command -v zsh)"
+    DEFAULT_SHELL=$(grep "^$USER:" /etc/passwd | cut -d: -f7)
 
-	if [ -n "$SHELL_" ] && [ "$DEFAULT_SHELL" != "$SHELL_" ]; then
-		if prompt "Change Default Shell"; then
-			echo "Password Required to change shell"
-			chsh -s "$SHELL_"
-		fi
+    if [ -n "$SHELL_" ] && [ "$DEFAULT_SHELL" != "$SHELL_" ]; then
+	if prompt "Change Default Shell"; then
+	    echo "Password Required to change shell"
+	    chsh -s "$SHELL_"
 	fi
+    fi
 else
-	echo "Cannot open /etc/passwd. Required to get default shell!"
-	echo "User must change shell on their own"
+    echo "Cannot open /etc/passwd. Required to get default shell!"
+    echo "User must change shell on their own"
 fi
 
 # shellcheck source=/dev/null
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 if $ALLOW_PACKAGE && prompt "Install Packages"; then
-	source <(cat /etc/*release)
-	[ -n "$ID_LIKE" ] && ID="$ID_LIKE"
-	case "$(echo "$ID" | tr '[:upper:]' '[:lower:]')" in
+    source <(cat /etc/*release)
+    [ -n "$ID_LIKE" ] && ID="$ID_LIKE"
+    case "$(echo "$ID" | tr '[:upper:]' '[:lower:]')" in
 	arch)
-		sudo pacman -Syu || exit $?
-		xargs -a "packages/arch.list" \
-			sudo pacman -S --noconfirm --needed || exit $?
+	    sudo pacman -Syu || exit $?
+	    xargs -a "packages/arch.list" \
+		sudo pacman -S --noconfirm --needed || exit $?
 	;;
 	debian) echo "Debian Package Support Not Yet Supported";;
 	*) echo "Unknown Distro: $ID";;
-	esac
+    esac
 fi
 
 XORG_OVERRIDE=false
@@ -120,41 +120,40 @@ XORG_RUNNING=false
 (quiet_run_as xset q > /dev/null) && XORG_RUNNING=true
 
 if $XORG_OVERRIDE || $XORG_RUNNING; then
-	# Reload i3 config if running
-	if pgrep "i3$" > /dev/null && prompt "Reload i3"; then
-		i3-msg reload > /dev/null
-	fi
+    I3_MSG="Reload i3wm"
+    PA_MSG="Enable Pulseaudio"
+    BT_MSG="Enable Bluetooth"
 
-	SYSCTL=false
-	SYSCTL_ROOT=false
+    # Reload i3 config if running
+    pgrep "i3$" > /dev/null  && prompt "$I3_MSG" && i3-msg reload > /dev/null
 
-	PA_MSG="Enable Pulseaudio"
-	BT_MSG="Enable Bluetooth"
+    SYSCTL=false
+    SYSCTL_ROOT=false
 
-	(! check_systemd_user pulseaudio && prompt "$PA_MSG") && SYSCTL=true
-	(! check_systemd bluetooth && prompt "$BT_MSG") && SYSCTL_ROOT=true
+    (! check_systemd_user pulseaudio && prompt "$PA_MSG") && SYSCTL=true
+    (! check_systemd bluetooth && prompt "$BT_MSG") && SYSCTL_ROOT=true
 
-	$SYSCTL && systemctl --user daemon-reload
-	$SYSCTL && systemctl --user enable --now pulseaudio
+    $SYSCTL && systemctl --user daemon-reload
+    $SYSCTL && systemctl --user enable --now pulseaudio
 	
-	$SYSCTL && $SYSCTL_ROOT && sudo systemctl daemon-reload
-	$SYSCTL && $SYSCTL_ROOT && sudo systemctl enable --now bluetooth
+    $SYSCTL && $SYSCTL_ROOT && sudo systemctl daemon-reload
+    $SYSCTL && $SYSCTL_ROOT && sudo systemctl enable --now bluetooth
 else
-	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
+    echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
 
 if $ALLOW_ROOT_MOD && prompt "ROOT: Patches For Backlight Support"; then
-	groups | grep video > /dev/null || sudo usermod -aG video "$USER"
-	UDEV_PATH="/etc/udev/rules.d/backlight.rules"
-	UDEV_PATH_DEFAULT="/etc/udev/rules.d/81-backlight.rules"
-	UDEV_TEMPLATE='ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="acpi_video0"'
+    groups | grep video > /dev/null || sudo usermod -aG video "$USER"
+    UDEV_PATH="/etc/udev/rules.d/backlight.rules"
+    UDEV_PATH_DEFAULT="/etc/udev/rules.d/81-backlight.rules"
+    UDEV_TEMPLATE='ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="acpi_video0"'
 
-	[ -e "$UDEV_PATH" ] || \
-		echo "Reboot when complete to fix backlight controls"
-	echo "$UDEV_TEMPLATE, GROUP=\"video\", MODE=\"0664\"" \
-		| sudo tee "$UDEV_PATH"
-	echo "$UDEV_TEMPLATE, ATTR{brightness}=\"8\"" \
-		| sudo tee "$UDEV_PATH_DEFAULT"
+    [ -e "$UDEV_PATH" ] \
+	|| echo "Reboot when complete to fix backlight controls"
+    echo "$UDEV_TEMPLATE, GROUP=\"video\", MODE=\"0664\"" \
+	| sudo tee "$UDEV_PATH"
+    echo "$UDEV_TEMPLATE, ATTR{brightness}=\"8\"" \
+	| sudo tee "$UDEV_PATH_DEFAULT"
 fi
 
 # shellcheck source=/dev/null disable=SC2091
