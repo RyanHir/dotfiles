@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 
-export NEWT_COLORS_FILE="$(dirname "$0")/src/.config/whiptail.env"
+NEWT_COLORS_FILE="$(dirname "$0")/src/.config/whiptail.env"
+export NEWT_COLORS_FILE
 
 usage() {
 	cat << EOF
@@ -43,6 +44,10 @@ check_systemd() {
 }
 check_systemd_user() {
     systemctl --user status "$@" > /dev/null
+}
+_pgrep() {
+    DATA=$(ps -A | awk '$4~/'"$1"'/{print $1}')
+    test -n "$DATA" || return
 }
 export DENY_LOCALE_GEN=false
 export DENY_XORG_CONFIG=false
@@ -125,7 +130,7 @@ if $XORG_OVERRIDE || $XORG_RUNNING; then
     BT_MSG="Enable Bluetooth"
 
     # Reload i3 config if running
-    pgrep "i3$" > /dev/null  && prompt "$I3_MSG" && i3-msg reload > /dev/null
+    _pgrep "^i3$" && prompt "$I3_MSG" && i3-msg reload > /dev/null
 
     SYSCTL=false
     SYSCTL_ROOT=false
