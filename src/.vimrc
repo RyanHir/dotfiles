@@ -18,5 +18,8 @@ set ruler
 set undolevels=1000
 set backspace=indent,eol,start
 
+highlight ColorColumn ctermbg=gray
+set colorcolumn=80
+
 syntax on
 
