@@ -4,8 +4,8 @@ adapta-gtk-theme
 bash
 bash-completion
 blueman
-elementary-wallpapers
 dunst
+elementary-wallpapers
 feh
 i3-gaps
 i3blocks
@@ -23,3 +23,6 @@ termite
 xorg-server
 xorg-xinit
 xorg-xset
+zsh
+zsh-autosuggestions
+zsh-syntax-highlighting

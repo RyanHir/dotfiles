@@ -78,13 +78,13 @@ if prompt "Overwrite Config Files"; then
 fi
 
 if [ -r "/etc/passwd" ]; then
-	SHELL_PATH="/bin/bash"
+	SHELL_="$(command -v zsh)"
 	DEFAULT_SHELL=$(grep "^$USER:" /etc/passwd | cut -d: -f7)
 
-	if [ "$DEFAULT_SHELL" != "$SHELL_PATH" ]; then
+	if [ -n "$SHELL_" ] && [ "$DEFAULT_SHELL" != "$SHELL_" ]; then
 		if prompt "Change Default Shell"; then
 			echo "Password Required to change shell"
-			chsh -s "$SHELL_PATH"
+			chsh -s "$SHELL_"
 		fi
 	fi
 else
@@ -108,22 +108,31 @@ if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	esac
 fi
 
-if ( ($ALLOW_XORG && ! $DENY_XORG_CONFIG) || (command -V xset && xset q) &>/dev/null); then
+XORG_OVERRIDE=false
+XORG_RUNNING=false
+($ALLOW_XORG && ! $DENY_XORG_CONFIG) && XORG_OVERRIDE=true
+("$(command -v xset)" q > /dev/null) && XORG_RUNNING=true
+
+if $XORG_OVERRIDE || $XORG_RUNNING; then
 	# Reload i3 config if running
 	if pgrep "i3$" > /dev/null && prompt "Reload i3"; then
 		i3-msg reload > /dev/null
 	fi
+
+	SYSCTL=false
+	SYSCTL_ROOT=false
+
+	PA_MSG="Enable Pulseaudio"
+	BT_MSG="Enable Bluetooth"
+
+	(! check_systemd_user pulseaudio && prompt "$PA_MSG") && SYSCTL=true
+	(! check_systemd bluetooth && prompt "$BT_MSG") && SYSCTL_ROOT=true
+
+	$SYSCTL && systemctl --user daemon-reload
+	$SYSCTL && systemctl --user enable --now pulseaudio
 	
-	if ! check_systemd_user pulseaudio && prompt "Enable Pulseaudio"
-	then
-		systemctl --user daemon-reload
-		systemctl --user enable --now pulseaudio
-	
-		if ! check_systemd bluetooth > /dev/null && prompt "Enable Bluetooth"; then
-			sudo systemctl daemon-reload
-			sudo systemctl enable --now bluetooth
-		fi
-	fi
+	$SYSCTL && $SYSCTL_ROOT && sudo systemctl daemon-reload
+	$SYSCTL && $SYSCTL_ROOT && sudo systemctl enable --now bluetooth
 else
 	echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
@@ -142,13 +151,14 @@ if $ALLOW_ROOT_MOD && prompt "ROOT: Patches For Backlight Support"; then
 		| sudo tee "$UDEV_PATH_DEFAULT"
 fi
 
-if command -V locale > /dev/null; then
-	# shellcheck source=/dev/null
-	source <(locale)
-	if [ "$LANG" != "en_US.UTF-8" ] && ! $DENY_LOCALE_GEN; then
-		sudo sed -i "s/#en_US/en_US/;/#.*/d" /etc/locale.gen
-		sudo locale-gen
-		sudo localectl set-locale "LANG=en_US.UTF-8"
-	fi
+# shellcheck source=/dev/null disable=SC2091
+source <("$(command -v locale)")
+LANG_NEED_UPDATE=false
+[ -n "$LANG" ] && [ "$LANG" != "en_US.UTF-8" ] && LANG_NEED_UPDATE=true
+
+if $LANG_NEED_UPDATE && ! $DENY_LOCALE_GEN; then
+    sudo sed -i "s/#en_US/en_US/;/#.*/d" /etc/locale.gen
+    sudo locale-gen
+    sudo localectl set-locale "LANG=en_US.UTF-8"
 fi
 fi # end linux specific
