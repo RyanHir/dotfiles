@@ -32,6 +32,12 @@ prompt() {
 	fi
 }
 
+quiet_run_as() {
+    (command -v "$1" > /dev/null) || return
+    "$@" || return
+}
+export -f quiet_run_as
+
 check_systemd() {
 	systemctl status "$@" > /dev/null
 }
@@ -111,7 +117,7 @@ fi
 XORG_OVERRIDE=false
 XORG_RUNNING=false
 ($ALLOW_XORG && ! $DENY_XORG_CONFIG) && XORG_OVERRIDE=true
-("$(command -v xset)" q > /dev/null) && XORG_RUNNING=true
+(quiet_run_as xset q > /dev/null) && XORG_RUNNING=true
 
 if $XORG_OVERRIDE || $XORG_RUNNING; then
 	# Reload i3 config if running
@@ -152,7 +158,7 @@ if $ALLOW_ROOT_MOD && prompt "ROOT: Patches For Backlight Support"; then
 fi
 
 # shellcheck source=/dev/null disable=SC2091
-source <("$(command -v locale)")
+source <(quiet_run_as locale)
 LANG_NEED_UPDATE=false
 [ -n "$LANG" ] && [ "$LANG" != "en_US.UTF-8" ] && LANG_NEED_UPDATE=true
 
