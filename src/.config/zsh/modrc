@@ -6,8 +6,11 @@ autoload -Uz colors	&& colors
 
 setopt COMPLETE_ALIASES
 setopt HIST_IGNORE_DUPS
+unsetopt autocd beep
 #setopt noautomenu
-#
+
+
+bindkey -v
 zstyle ':completion:*:*:*:*:*' menu select
 
 # Always rebuild cache

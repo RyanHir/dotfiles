@@ -12,6 +12,8 @@ source "$HOME/.config/env"
 source "$HOME/.config/aliasrc"
 source "$HOME/.config/zsh/bindrc"
 
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=10000
-HISTFILE=~/.zsh_history
+
