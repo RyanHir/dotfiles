@@ -6,6 +6,6 @@ xrandr | awk '/disconnected/{print $1}' | xargs -I{} xrandr --output {} --off
 # Laptop Display
 xrandr --output eDP-1 --auto
 
-if xrandr | grep "DP-2-1 connected" > /dev/null; then
+if xrandr | grep -q "DP-2-1 connected"; then
 	xrandr --output DP-2-1 --auto --left-of eDP-1 --primary
 fi
