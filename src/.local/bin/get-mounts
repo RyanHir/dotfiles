@@ -3,17 +3,14 @@
 WITH_FS='{print $1" "$3" "$5}'
 WITHOUT_FS='{print $1" "$3}'
 
-export NO_FS=false
+NO_FS=false
 while getopts ":n" o; do
 	case "${o}" in
-		n) export NO_FS=true;;
+		n) NO_FS=true;;
 		?) echo "Invalid Option: -$OPTARG"; exit 2;;
 	esac
 done
 
-if $NO_FS; then
-mount | awk "/^\/dev/$WITHOUT_FS;/^\/\//$WITHOUT_FS" | column -t
-else
-mount | awk "/^\/dev/$WITH_FS;/\/\//$WITH_FS" | column -t
-fi
+$NO_FS && mount | awk "/^\/dev/$WITHOUT_FS;/^\/\//$WITHOUT_FS" | column -t
+$NO_FS || mount | awk "/^\/dev/$WITH_FS;/\/\//$WITH_FS" | column -t
 
