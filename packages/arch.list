@@ -23,6 +23,7 @@ termite
 xorg-server
 xorg-xinit
 xorg-xset
+xss-lock
 zsh
 zsh-autosuggestions
 zsh-syntax-highlighting
