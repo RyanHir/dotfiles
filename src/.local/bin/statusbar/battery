@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 
 set -e
+[ -n "$id" ] || exit
 cd /sys/class/power_supply/BAT$id
 [ "$(cat type)" = "Battery" ]
 
