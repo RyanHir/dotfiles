@@ -1,9 +1,5 @@
 #! /bin/sh
 
 . "$HOME/.config/wallpaper.env"
+[ -r "$WALL_PATH" ] && feh --bg-fill "$WALL_PATH"
 
-cd /usr/share/wallpapers
-
-if [ -r "$WALL_PATH" ]; then
-    feh --bg-fill "$WALL_PATH"
-fi
