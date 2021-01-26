@@ -39,12 +39,6 @@ quiet_run_as() {
 }
 export -f quiet_run_as
 
-check_systemd() {
-    systemctl status "$@" > /dev/null
-}
-check_systemd_user() {
-    systemctl --user status "$@" > /dev/null
-}
 _pgrep() {
     DATA=$(ps -A | awk '$4~/'"$1"'/{print $1}')
     test -n "$DATA" || return
@@ -125,24 +119,14 @@ XORG_RUNNING=false
 (quiet_run_as xset q > /dev/null) && XORG_RUNNING=true
 
 if $XORG_OVERRIDE || $XORG_RUNNING; then
-    I3_MSG="Reload i3wm"
     PA_MSG="Enable Pulseaudio"
-    BT_MSG="Enable Bluetooth"
-
-    # Reload i3 config if running
-    _pgrep "^i3$" && prompt "$I3_MSG" && i3-msg reload > /dev/null
 
     SYSCTL=false
-    SYSCTL_ROOT=false
-
-    (! check_systemd_user pulseaudio && prompt "$PA_MSG") && SYSCTL=true
-    (! check_systemd bluetooth && prompt "$BT_MSG") && SYSCTL_ROOT=true
+    (! systemctl --user is-active --quiet pulseaudio && prompt "$PA_MSG") \
+	&& SYSCTL=true
 
     $SYSCTL && systemctl --user daemon-reload
     $SYSCTL && systemctl --user enable --now pulseaudio
-	
-    $SYSCTL && $SYSCTL_ROOT && sudo systemctl daemon-reload
-    $SYSCTL && $SYSCTL_ROOT && sudo systemctl enable --now bluetooth
 else
     echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
