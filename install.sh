@@ -112,7 +112,7 @@ if $ALLOW_PACKAGE && prompt "Install Packages"; then
 	arch)
 	    sudo pacman -Syu || exit $?
 	    xargs -a "packages/arch.list" \
-		sudo pacman -S --noconfirm --needed || exit $?
+		sudo pacman -S --noconfirm --needed 2>&1| grep -v "skipping"
 	;;
 	debian) echo "Debian Package Support Not Yet Supported";;
 	*) echo "Unknown Distro: $ID";;
