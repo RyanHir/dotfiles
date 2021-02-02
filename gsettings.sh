@@ -3,7 +3,6 @@
 command -v gsettings > /dev/null || exit
 
 GSET="gsettings set"
-DSET="dconf load"
 
 KEYBIND="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/"
 
@@ -15,7 +14,7 @@ $GSET org.gnome.settings-daemon.plugins.media-keys custom-keybindings \
     "['$KEYBIND/custom0/']"
 
 dconf reset -f "$KEYBIND" 
-$DSET "$KEYBIND" << EOF
+dconf load "$KEYBIND" << EOF
 [custom0]
 binding='<Primary><Alt>t'
 command='gnome-terminal'
