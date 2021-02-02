@@ -104,9 +104,13 @@ if $ALLOW_PACKAGE && prompt "Install Packages"; then
     [ -n "$ID_LIKE" ] && ID="$ID_LIKE"
     case "$(echo "$ID" | tr '[:upper:]' '[:lower:]')" in
 	arch)
-	    sudo pacman -Syu || exit $?
-	    xargs -a "packages/arch.list" \
-		sudo pacman -S --noconfirm --needed 2>&1| grep -v "skipping"
+	    sudo pacman -Syu || exit
+	    # Install
+	    sed "/^!/d" packages/arch.list | xargs \
+		sudo pacman -S --noconfirm --needed
+	    # Uninstall, fail sucessfully
+	    sed "/^!/!d;s/!//g" packages/arch.list | xargs \
+		sudo pacman -Rsc --noconfirm || true
 	;;
 	debian) echo "Debian Package Support Not Yet Supported";;
 	*) echo "Unknown Distro: $ID";;
@@ -119,14 +123,21 @@ XORG_RUNNING=false
 (quiet_run_as xset q > /dev/null) && XORG_RUNNING=true
 
 if $XORG_OVERRIDE || $XORG_RUNNING; then
+    GDM_MSG="Enable GDM Logim Manager"
     PA_MSG="Enable Pulseaudio"
 
-    SYSCTL=false
+    PA_SYSCTL=false
+    GDM_SYSCTL=false
     (! systemctl --user is-active --quiet pulseaudio && prompt "$PA_MSG") \
-	&& SYSCTL=true
+	&& PA_SYSCTL=true
+    (! systemctl is-active --quiet gdm && prompt "$GDM_MSG") \
+	&& GDM_SYSCTL=true
 
-    $SYSCTL && systemctl --user daemon-reload
-    $SYSCTL && systemctl --user enable --now pulseaudio
+    $PA_SYSCTL && systemctl --user daemon-reload
+    $PA_SYSCTL && systemctl --user enable --now pulseaudio
+
+    $GDM_SYSCTL && systemctl daemon-reload
+    $GDM_SYSCTL && systemctl enable --now gdm
 else
     echo "WARN: Xorg not running, assuming is a server enviorment. Override with \"-x\""
 fi
