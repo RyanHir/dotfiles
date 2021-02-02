@@ -1,5 +1,6 @@
 #! /bin/sh
 
+command -v dconf > /dev/null || exit
 command -v gsettings > /dev/null || exit
 
 GSET="gsettings set"
