@@ -166,4 +166,7 @@ if $LANG_NEED_UPDATE && ! $DENY_LOCALE_GEN; then
     sudo locale-gen
     sudo localectl set-locale "LANG=en_US.UTF-8"
 fi
+
+sh ./gsettings.sh
+
 fi # end linux specific
