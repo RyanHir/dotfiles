@@ -7,6 +7,7 @@ dconf reset -f /org/gnome/
 GSET="gsettings set"
 
 # Theme
+$GSET org.gnome.desktop.interface clock-format '12h'
 $GSET org.gnome.desktop.interface cursor-theme 'Adwaita'
 $GSET org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 $GSET org.gnome.desktop.interface icon-theme 'Adwaita'
