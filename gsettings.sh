@@ -1,10 +1,10 @@
 #! /bin/sh
 
-command -v gsettings > /dev/null || exit
-
-dconf reset -f /org/gnome/
-
+# VARS
 GSET="gsettings set"
+
+# Clean slate
+dconf reset -f /org/gnome/
 
 # Theme
 $GSET org.gnome.desktop.interface clock-format '12h'
