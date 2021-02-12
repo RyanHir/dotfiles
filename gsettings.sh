@@ -27,6 +27,7 @@ $GSET $GKEYBIND switch-applications-backward "[]"
 $GSET $GKEYBIND switch-windows "['<alt>tab']"
 $GSET $GKEYBIND switch-windows-backward "['<Shift><Alt>Tab']"
 
+# Ubuntu like terminal keybind
 DDAEMON_C0="/${GDAEMON//\./\/}/custom-keybindings/custom0/" 
 $GSET $GDAEMON custom-keybindings "['$DDAEMON_C0']"
 dconf load "$DDAEMON_C0" << EOF
