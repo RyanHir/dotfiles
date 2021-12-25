@@ -12,3 +12,10 @@ alias grep="grep --color=auto"
 alias diff="diff --color=auto"
 alias open="xdg-open"
 
+distro() {
+    if [ -f /etc/os-release ]; then
+        echo "$(source /etc/os-release; echo "$NAME")"
+    else
+        echo "Unknown"
+    fi
+}
