@@ -1,7 +1,0 @@
-#! /bin/sh
-
-set -e
-
-. "/sys/class/power_supply/hidpp_battery_$id/uevent"
-
-echo " Batt: $POWER_SUPPLY_CAPACITY%"

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Icon=preferences-desktop
-Exec=lxsession-default-apps
-Name=Default applications for LXSession
-Categories=GTK;Settings;DesktopSettings;X-LXDE-Settings;
-OnlyShowIn=LXDE;
-Hidden=true

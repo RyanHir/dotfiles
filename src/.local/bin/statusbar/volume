@@ -1,8 +1,0 @@
-#! /bin/sh
-
-. $HOME/.config/env
-
-SINK_NAME=$(get-pa-sink)
-VOL=$(get-pa-volume $SINK_NAME)
-
-echo "Volume: $VOL"

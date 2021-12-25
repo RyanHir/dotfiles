@@ -1,13 +1,14 @@
 #! /usr/bin/env bash
 
-if command -v startx > /dev/null && [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-	exec startx
+source "$HOME/.config/bash/promptrc"
+
+if [ -f /usr/share/bash-completion/bash_completion ]; then
+    source /usr/share/bash-completion/bash_completion
 fi
 
-source "$HOME/.config/bash/promptrc"
-#source "$HOME/.config/env"
-source "$HOME/.config/aliasrc"
-export PATH=$PATH:$HOME/.local/bin/
+alias l="ls"
+alias ls="ls --color=auto"
+alias grep="grep --color=auto"
+alias diff="diff --color=auto"
+alias open="xdg-open"
 
-[[ "$PS1" && -f /usr/share/bash-completion/bash_completion ]] && \
-	. /usr/share/bash-completion/bash_completion

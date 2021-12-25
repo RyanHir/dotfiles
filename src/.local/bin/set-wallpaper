@@ -1,5 +1,0 @@
-#! /bin/sh
-
-. "$HOME/.config/wallpaper.env"
-[ -r "$WALL_PATH" ] && feh --bg-fill "$WALL_PATH"
-
