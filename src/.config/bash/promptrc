@@ -1,10 +1,12 @@
 #! /usr/bin/env bash
 
-_RED="\[\033[1;31m\]"
-_ORANGE="\[\033[1;33m\]"
-_GREEN="\[\033[1;32m\]"
-_BLUE="\[\033[1;94m\]"
-_PURPLE="\[\033[1;35m\]"
-_CLEAR="\[$(tput sgr0)\]"
+RED="\[\e[1;31m\]"
+ORANGE="\[\e[1;33m\]"
+GREEN="\[\e[1;32m\]"
+BLUE="\[\e[1;94m\]"
+PURPLE="\[\e[1;35m\]"
+CLEAR="\[\e[0m\]"
 
-PS1="$_RED[$_ORANGE\u$_GREEN@$_BLUE\h $_PURPLE\w$_RED]$_CLEAR$ "
+PS1="${RED}[${ORANGE}\u${GREEN}@${BLUE}\h ${PURPLE}\w${RED}]${CLEAR}$ "
+
+unset RED ORANGE GREEN BLUE PURPLE RED CLEAR
