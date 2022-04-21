@@ -7,6 +7,10 @@ BLUE="\[\e[1;94m\]"
 PURPLE="\[\e[1;35m\]"
 CLEAR="\[\e[0m\]"
 
-PS1="${RED}[${ORANGE}\u${GREEN}@${BLUE}\h ${PURPLE}\w${RED}]${CLEAR}$ "
+if [ "$EUID" = 0 ]; then
+    PS1="${RED}[\u@\h \w]${CLEAR}# "
+else
+    PS1="${RED}[${ORANGE}\u${GREEN}@${BLUE}\h ${PURPLE}\w${RED}]${CLEAR}$ "
+fi
 
 unset RED ORANGE GREEN BLUE PURPLE RED CLEAR
