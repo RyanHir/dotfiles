@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 
-source "$HOME/.config/env"
 source "$HOME/.config/bash/promptrc"
 
 if [ -f /usr/share/bash-completion/bash_completion ]; then

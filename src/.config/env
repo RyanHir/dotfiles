@@ -1,4 +1,8 @@
 #! /bin/sh
 
+if [ -n "$BASH_VERSION" ] && [ -f "$HOME/.bashrc" ]; then
+    source "$HOME/.bashrc"
+fi
+
 export EDITOR=vim
 export LANG=en_US.UTF-8
